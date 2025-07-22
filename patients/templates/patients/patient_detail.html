@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "پنل بیمار" %}: {{ patient.name }} - سامانه مدیریت پزشکی{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="h3">
+                <i class="fas fa-user me-2"></i> {% trans "پنل بیمار" %}: {{ patient.name }}
+            </h1>
+            <a href="{% url 'tickets:patient_list' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-right me-1"></i> {% trans "بازگشت" %}
+            </a>
+        </div>
+        <hr>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-10 mx-auto">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-user me-2"></i> {% trans "اطلاعات بیمار" %}
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>{% trans "نام" %}:</strong> {{ patient.name }}</p>
+                        <p><strong>{% trans "سن" %}:</strong> {{ patient.age }}</p>
+                        <p><strong>{% trans "شماره تماس" %}:</strong> {{ patient.phone }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>{% trans "کد ملی" %}:</strong> {{ patient.national_id }}</p>
+                        <p><strong>{% trans "جنسیت" %}:</strong> {{ patient.get_gender_display }}</p>
+                        <p><strong>{% trans "آدرس" %}:</strong> {{ patient.address|default:"مشخص نشده" }}</p>
+                        <p><strong>{% trans "تاریخ تولد" %}:</strong> {{ patient.birth_date|default:"مشخص نشده" }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-list me-2"></i> {% trans "خدمات ثبت‌شده" %}
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if services %}
+                    <ul class="list-group mb-4">
+                        {% for service in services %}
+                            <li class="list-group-item">{{ service.service_type }} - {{ service.date }}: {{ service.description }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <div class="alert alert-info">
+                        <p class="mb-0">{% trans "هیچ خدمتی ثبت نشده." %}</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-plus me-2"></i> {% trans "ثبت خدمت جدید" %}
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}
+                                <p class="mb-0">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label for="{{ form.service_type.id_for_label }}" class="form-label">{{ form.service_type.label }}</label>
+                                {{ form.service_type }}
+                                {% if form.service_type.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.service_type.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label for="{{ form.description.id_for_label }}" class="form-label">{{ form.description.label }}</label>
+                                {{ form.description }}
+                                {% if form.description.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.description.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button type="submit" class="btn btn-info text-white">
+                            <i class="fas fa-save me-1"></i> {% trans "ذخیره" %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -24,5 +24,7 @@ urlpatterns = [
     path("", include("users.urls")),
     path("", include("tickets.urls")),
     path("", include("medical.urls")),
+    path('patients/', include('patients.urls')),
+    path('accounts/', include('django.contrib.auth.urls')),
     path("exports/", include("exports.urls", namespace="exports")),
 ]
