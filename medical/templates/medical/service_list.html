@@ -1,0 +1,280 @@
+{% extends "users/base.html" %}
+{% load custom_filters %}  <!-- لود کردن فیلتر سفارشی -->
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">بخش {{ department_name }}</h1>
+        <div>
+          <a href="{% url 'medical:service_form' department %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-1"></i>
+            درخواست جدید
+          </a>
+        </div>
+      </div>
+      
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'error' %}alert-danger{% else %}alert-info{% endif %}" role="alert">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      <!-- فرم جستجو -->
+      <div class="card mb-4">
+        <div class="card-header bg-light">
+          <a class="btn btn-link text-decoration-none" data-bs-toggle="collapse" href="#searchCollapse" role="button" aria-expanded="false" aria-controls="searchCollapse">
+            <i class="bi bi-search me-2"></i>جستجو و فیلتر
+          </a>
+        </div>
+        <div class="collapse {% if request.GET %}show{% endif %}" id="searchCollapse">
+          <div class="card-body">
+            <form method="get" class="row g-3">
+              <div class="col-md-4">
+                <label for="{{ search_form.name.id_for_label }}" class="form-label">{{ search_form.name.label }}:</label>
+                {{ search_form.name }}
+              </div>
+              <div class="col-md-4">
+                <label for="{{ search_form.phone.id_for_label }}" class="form-label">{{ search_form.phone.label }}:</label>
+                {{ search_form.phone }}
+              </div>
+              <div class="col-md-4">
+                <label for="{{ search_form.status.id_for_label }}" class="form-label">{{ search_form.status.label }}:</label>
+                {{ search_form.status }}
+              </div>
+              <div class="col-md-4">
+                <label for="{{ search_form.start_date.id_for_label }}" class="form-label">{{ search_form.start_date.label }}:</label>
+                {{ search_form.start_date }}
+              </div>
+              <div class="col-md-4">
+                <label for="{{ search_form.end_date.id_for_label }}" class="form-label">{{ search_form.end_date.label }}:</label>
+                {{ search_form.end_date }}
+              </div>
+              <div class="col-md-4">
+                <label for="{{ search_form.financial_status.id_for_label }}" class="form-label">{{ search_form.financial_status.label }}:</label>
+                {{ search_form.financial_status }}
+              </div>
+              <div class="col-12 d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary me-2">
+                  <i class="bi bi-search me-1"></i>جستجو
+                </button>
+                <a href="{% url 'medical:service_list' department %}" class="btn btn-secondary">
+                  <i class="bi bi-x-circle me-1"></i>حذف فیلترها
+                </a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-striped table-sm align-middle">
+          <thead>
+            <tr>
+              <th>تاریخ ثبت</th>
+              <th>نام بیمار</th>
+              <th>شماره تماس</th>
+              <th>وضعیت</th>
+              <th>وضعیت مالی</th>
+              <th>عملیات</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for service in services %}
+            <tr>
+              <td>{{ service.created_at|to_jalali }}</td>
+              <td>{{ service.name|default:"-" }}</td>
+              <td>{{ service.phone }}</td>
+              <td>
+                {% if service.status == 'under_review' %}
+                  <span class="badge bg-warning text-dark">در دست بررسی</span>
+                {% elif service.status == 'provided' %}
+                  <span class="badge bg-success">منجر به خدمت</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if service.status == 'provided' %}
+                  {% comment %} استفاده از property جدید برای بررسی کامل بودن اطلاعات مالی {% endcomment %}
+                  {% if service.is_financial_info_complete %}
+                    <span class="badge bg-info">اطلاعات مالی ثبت شده</span>
+                  {% else %}
+                    <span class="badge bg-warning text-dark">اطلاعات مالی ثبت نشده</span>
+                  {% endif %}
+                {% else %}
+                  <span class="text-muted">-</span>
+                {% endif %}
+              </td>
+              <td>
+                <div class="btn-group" role="group">
+                  <a href="{% url 'medical:service_detail' service_id=service.id %}" class="btn btn-sm btn-outline-primary">مشاهده</a>
+                  
+                  <a href="{% url 'medical:service_edit' service_id=service.id %}" class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-pencil me-1"></i>ویرایش
+                  </a>
+                  {% comment %} دکمه ویرایش مالی فقط در صورت وجود اطلاعات مالی (کامل یا ناقص) نمایش داده می‌شود {% endcomment %}
+                  {% if service.status == 'provided' and service.financial_info %}
+                    <a href="{% url 'medical:service_financial_edit' service_id=service.id %}" class="btn btn-sm btn-outline-info">
+                      <i class="bi bi-pencil-square me-1"></i>ویرایش مالی
+                    </a>
+                  {% endif %}
+                  <button type="button" class="btn btn-sm btn-outline-danger" 
+                          data-bs-toggle="modal" data-bs-target="#deleteModal{{ service.id }}">
+                    <i class="bi bi-trash me-1"></i>حذف
+                  </button>
+                  
+                  {% comment %} دکمه ثبت اطلاعات مالی فقط در صورت عدم وجود اطلاعات مالی نمایش داده می‌شود {% endcomment %}
+                  {% if service.status == 'provided' and not service.financial_info %}
+                    <a href="{% url 'medical:service_financial_form' service_id=service.id %}" class="btn btn-sm btn-warning">
+                      <i class="bi bi-cash me-1"></i>ثبت اطلاعات مالی
+                    </a>
+                  {% endif %}
+                </div>
+                
+                <!-- Modal for Delete Confirmation -->
+                <div class="modal fade" id="deleteModal{{ service.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ service.id }}" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel{{ service.id }}">تایید حذف درخواست</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <p>آیا از حذف این درخواست اطمینان دارید؟</p>
+                        <p>
+                          <strong>نام بیمار:</strong> {{ service.name|default:"-" }}<br>
+                          <strong>شماره تماس:</strong> {{ service.phone }}<br>
+                          <strong>تاریخ ثبت:</strong> {{ service.created_at|to_jalali }}
+                        </p>
+                        <p class="text-danger">
+                          <i class="bi bi-exclamation-triangle me-1"></i>
+                          این عمل غیر قابل بازگشت است!
+                        </p>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
+                        <form action="{% url 'medical:service_delete' service_id=service.id %}" method="post" style="display:inline;">
+                          {% csrf_token %}
+                          <button type="submit" class="btn btn-danger">حذف</button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="6" class="text-center py-4">
+                <div class="text-muted">هیچ درخواستی ثبت نشده است</div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+{{ search_form.media }}
+
+<!-- اضافه کردن لینک‌های مورد نیاز برای تقویم شمسی -->
+<link rel="stylesheet" href="https://unpkg.com/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://unpkg.com/persian-date@1.1.0/dist/persian-date.min.js"></script>
+<script src="https://unpkg.com/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // اطمینان از اینکه jQuery لود شده است
+  if (typeof jQuery != 'undefined') {
+    console.log('jQuery is loaded');
+    
+    setTimeout(function() {
+      // تنظیم تقویم شمسی برای فیلد تاریخ شروع
+      try {
+        console.log('Initializing start date picker');
+        $('#id_start_date').persianDatepicker({
+          format: 'YYYY/MM/DD',
+          initialValueType: 'persian',
+          autoClose: true,
+          persianDigit: false,
+          observer: true,
+          calendarType: 'persian',
+          calendar: {
+            persian: {
+              locale: 'fa',
+              showHint: true,
+              leapYearMode: 'algorithmic'
+            }
+          },
+          navigator: {
+            enabled: true,
+            scroll: { enabled: true },
+            text: { btnNextText: '<', btnPrevText: '>' }
+          },
+          toolbox: {
+            enabled: true,
+            calendarSwitch: { enabled: false },
+            todayButton: { enabled: true, text: { fa: 'امروز' } },
+            submitButton: { enabled: true, text: { fa: 'تایید' } },
+            text: { btnToday: 'امروز' }
+          }
+        });
+        
+        // تنظیم جداگانه برای تاریخ پایان
+        console.log('Initializing end date picker');
+        $('#id_end_date').persianDatepicker({
+          format: 'YYYY/MM/DD',
+          initialValueType: 'persian',
+          autoClose: true,
+          persianDigit: false,
+          observer: true,
+          calendarType: 'persian',
+          calendar: {
+            persian: {
+              locale: 'fa',
+              showHint: true,
+              leapYearMode: 'algorithmic'
+            }
+          },
+          navigator: {
+            enabled: true,
+            scroll: { enabled: true },
+            text: { btnNextText: '<', btnPrevText: '>' }
+          },
+          toolbox: {
+            enabled: true,
+            calendarSwitch: { enabled: false },
+            todayButton: { enabled: true, text: { fa: 'امروز' } },
+            submitButton: { enabled: true, text: { fa: 'تایید' } },
+            text: { btnToday: 'امروز' }
+          }
+        });
+        
+        console.log('Persian datepicker successfully initialized');
+      } catch (e) {
+        console.error('Error initializing persian datepicker:', e);
+      }
+    }, 500); // تاخیر کوتاه برای اطمینان از آماده بودن DOM
+  } else {
+    console.error('jQuery is not loaded!');
+  }
+});
+</script>
+
+<style>
+  /* استایل‌های تقویم شمسی */
+  .datepicker-plot-area {
+    font-family: inherit;
+    direction: rtl;
+    z-index: 1000; /* افزایش z-index برای اطمینان از نمایش تقویم بر روی سایر عناصر */
+  }
+</style>
+{% endblock %}

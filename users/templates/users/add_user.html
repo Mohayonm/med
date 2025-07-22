@@ -1,0 +1,143 @@
+{% extends "users/base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'users:dashboard' %}">داشبورد</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'users:user_list' %}">مدیریت کاربران</a></li>
+          <li class="breadcrumb-item active" aria-current="page">افزودن کاربر جدید</li>
+        </ol>
+      </nav>
+      
+      <div class="card">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">افزودن کاربر جدید</h5>
+        </div>
+        <div class="card-body">
+          <form method="post" action="">
+            {% csrf_token %}
+            
+            {% if form.errors %}
+              <div class="alert alert-danger">
+                <h4 class="alert-heading">خطاهای فرم را اصلاح کنید:</h4>
+                <ul>
+                  {% for field in form %}
+                    {% for error in field.errors %}
+                      <li>{{ field.label }}: {{ error }}</li>
+                    {% endfor %}
+                  {% endfor %}
+                  {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+            {% endif %}
+            
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="{{ form.user_name.id_for_label }}" class="form-label">نام کاربری:</label>
+                  {{ form.user_name }}
+                  <div class="form-text">نام کاربری باید حداقل 5 کاراکتر باشد</div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="{{ form.email.id_for_label }}" class="form-label">ایمیل:</label>
+                  {{ form.email }}
+                  <div class="form-text">ایمیل اختیاری است</div>
+                </div>
+            </div>
+            
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="{{ form.first_name.id_for_label }}" class="form-label">نام:</label>
+                  {{ form.first_name }}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="{{ form.last_name.id_for_label }}" class="form-label">نام خانوادگی:</label>
+                  {{ form.last_name }}
+                </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="{{ form.phone_number.id_for_label }}" class="form-label">شماره تلفن همراه:</label>
+                  {{ form.phone_number }}
+                  <div class="form-text">شماره تلفن الزامی است</div>
+                </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="{{ form.password1.id_for_label }}" class="form-label">رمز عبور:</label>
+                  {{ form.password1 }}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="{{ form.password2.id_for_label }}" class="form-label">تکرار رمز عبور:</label>
+                  {{ form.password2 }}
+                </div>
+              </div>
+            </div>
+            
+            <div class="row mb-4">
+              <div class="col-md-6">
+                <div class="card">
+                  <div class="card-header">
+                    <h5 class="mb-0">وضعیت کاربر</h5>
+                  </div>
+                  <div class="card-body">
+                    <div class="form-check form-switch mb-3">
+                      <label class="form-check-label" for="{{ form.is_staff.id_for_label }}">دسترسی به پنل ادمین</label>
+                      {{ form.is_staff }}
+                    </div>
+                    
+                    <div class="form-check form-switch">
+                      <label class="form-check-label" for="{{ form.is_superuser.id_for_label }}">سوپر یوزر (دسترسی کامل)</label>
+                      {{ form.is_superuser }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <h5 class="mb-3">نقش‌های دسترسی</h5>
+            <div class="row g-3 mb-4">
+              {% for role in roles %}
+                <div class="col-md-4 col-lg-3">
+                  <div class="card h-100">
+                    <div class="card-body">
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="role_{{ role.id }}" name="roles" value="{{ role.id }}">
+                        <label class="form-check-label" for="role_{{ role.id }}">
+                          <strong>{{ role.fa_name }}</strong>
+                          <small class="text-muted d-block">{{ role.description }}</small>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+            
+            <div class="mb-3">
+              <button type="submit" class="btn btn-primary">ایجاد کاربر</button>
+              <a href="{% url 'users:user_list' %}" class="btn btn-outline-secondary me-2">بازگشت</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

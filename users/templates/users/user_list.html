@@ -1,0 +1,89 @@
+{% extends "users/base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h2>مدیریت کاربران و سطوح دسترسی</h2>
+        <div class="btn-toolbar mb-2 mb-md-0">
+          <a href="{% url 'users:add_user' %}" class="btn btn-primary">
+            <i class="bi bi-person-plus-fill me-1"></i>
+            افزودن کاربر جدید
+          </a>
+        </div>
+      </div>
+      
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'error' %}alert-danger{% else %}alert-info{% endif %}" role="alert">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+      
+      <div class="card">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">لیست کاربران</h5>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-striped table-hover">
+              <thead>
+                <tr>
+                  <th>شناسه</th>
+                  <th>نام کاربری</th>
+                  <th>نام و نام خانوادگی</th>
+                  <th>ایمیل</th>
+                  <th>نقش‌ها</th>
+                  <th>وضعیت</th>
+                  <th>عملیات</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for user in users %}
+                <tr>
+                  <td>{{ user.id }}</td>
+                  <td>{{ user.user_name }}</td>
+                  <td>{{ user.first_name }} {{ user.last_name }}</td>
+                  <td>{{ user.email }}</td>
+                  <td>
+                    {% for role in user.roles.all %}
+                      <span class="badge bg-info">{{ role.fa_name }}</span>
+                    {% empty %}
+                      <span class="badge bg-secondary">بدون نقش</span>
+                    {% endfor %}
+                  </td>
+                  <td>
+                    {% if user.is_superuser %}
+                      <span class="badge bg-danger">سوپریوزر</span>
+                    {% elif user.is_staff %}
+                      <span class="badge bg-warning text-dark">ادمین</span>
+                    {% else %}
+                      <span class="badge bg-success">کاربر عادی</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    <div class="btn-group btn-group-sm" role="group">
+                      <a href="{% url 'users:user_permissions' user.id %}" class="btn btn-primary">
+                        <i class="bi bi-key"></i> دسترسی‌ها
+                      </a>
+                      <a href="{% url 'users:reset_user_password' user.id %}" class="btn btn-warning text-white">
+                        <i class="bi bi-key-fill"></i> تغییر رمز
+                      </a>
+                      <a href="{% url 'users:delete_user' user.id %}" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> حذف
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

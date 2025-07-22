@@ -1,0 +1,206 @@
+{% extends "users/base.html" %} 
+{% load custom_filters %} 
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="{% url 'users:dashboard' %}">داشبورد</a>
+          </li>
+          <li class="breadcrumb-item">
+            <a href="{% url 'medical:equipment_list' %}">تجهیزات</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">
+            جزئیات تجهیزات
+          </li>
+        </ol>
+      </nav>
+
+      {% if messages %} {% for message in messages %}
+      <div
+        class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'error' %}alert-danger{% else %}alert-info{% endif %}"
+        role="alert"
+      >
+        {{ message }}
+      </div>
+      {% endfor %} {% endif %}
+
+      <div class="card">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">جزئیات تجهیزات</h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <strong>تاریخ ثبت:</strong> {{ equipment.created_at|date:"Y/m/d"}}
+              </div>
+              <div class="mb-3">
+                <strong>نوع اقلام:</strong> {{ equipment.item_type }}
+              </div>
+              <div class="mb-3">
+                <strong>تعداد:</strong> {{ equipment.quantity }} عدد
+              </div>
+              <div class="mb-3">
+                <strong>تاریخ:</strong> {{ equipment.request_date|default:"-"  }}
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <strong>مبلغ دریافتی:</strong> {{ equipment.total_amount|format_currency }}
+                تومان
+              </div>
+              <div class="mb-3">
+                <strong>مصرف:</strong> {{ equipment.consumption|default:"-" }}
+              </div>
+              <div class="mb-3">
+                <strong>حق السهم مرکز:</strong> {{ equipment.center_share|format_currency }}
+                تومان
+              </div>
+              <div class="mb-3">
+                <strong>نام معرف:</strong> {{ equipment.referrer_name|default:"-" }}
+              </div>
+              <div class="mb-3">
+                <strong>حق السهم معرف:</strong> {{ equipment.consume_share|format_currency }}
+                تومان
+              </div>
+            </div>
+          </div>
+<!-- در بخش مناسب -->
+<div class="mb-3">
+  <strong>دریافت وجه از:</strong>
+  {% if equipment.payment_receiver == "specialist" %}
+    توسط کارشناس اعزامی
+  {% elif equipment.payment_receiver == "center" %}
+    توسط مرکز
+  {% else %}
+    -
+  {% endif %}
+</div>
+          {% if equipment.referred_to %}
+          {% endif %} {% if equipment.referred_to %}
+          <hr />
+          <div class="alert alert-info mt-3">
+            <i class="bi bi-arrow-right-circle me-2"></i>
+            این تجهیزات به
+            <strong>{{ equipment.referred_to.user_name }}</strong> ارجاع داده
+            شده است. {% if equipment.referral_reason %}
+            <div class="mt-2">
+              <strong>علت ارجاع:</strong> {{ equipment.referral_reason }}
+            </div>
+            {% endif %}
+          </div>
+          {% endif %}
+          
+          <!-- بعد از بخش مالی یا در محل مناسب دیگر -->
+<div class="row">
+  <div class="col-md-6">
+    {% if equipment.receipt_image %}
+    <div class="mb-3">
+      <strong>رسید پرداخت:</strong>
+      <div class="mt-2">
+        <a href="{{ equipment.receipt_image.url }}" target="_blank">
+          <img src="{{ equipment.receipt_image.url }}" alt="رسید پرداخت" class="img-thumbnail" style="max-height: 150px;">
+        </a>
+        <small class="d-block mt-1">برای مشاهده در اندازه بزرگتر کلیک کنید</small>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+  
+  <div class="col-md-6">
+    {% if equipment.description %}
+    <div class="mb-3">
+      <strong>توضیحات:</strong>
+      <p class="mt-2">{{ equipment.description }}</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+          <div class="mt-4">
+            <div class="mt-4">
+              <a
+                href="{% url 'medical:equipment_edit' equipment_id=equipment.id %}"
+                class="btn btn-outline-secondary me-2"
+              >
+                <i class="bi bi-pencil me-1"></i>ویرایش
+              </a>
+              <button
+                type="button"
+                class="btn btn-outline-danger me-2"
+                data-bs-toggle="modal"
+                data-bs-target="#deleteEquipmentModal"
+              >
+                <i class="bi bi-trash me-1"></i>حذف
+              </button>
+              <a
+                href="{% url 'medical:equipment_list' %}"
+                class="btn btn-outline-secondary"
+                >بازگشت</a
+              >
+            </div>
+          </div>
+          <div
+            class="modal fade"
+            id="deleteEquipmentModal"
+            tabindex="-1"
+            aria-labelledby="deleteEquipmentModalLabel"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="deleteEquipmentModalLabel">
+                    تایید حذف تجهیزات
+                  </h5>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div class="modal-body">
+                  <p>آیا از حذف این درخواست تجهیزات اطمینان دارید؟</p>
+                  <p>
+                    <strong>نوع اقلام:</strong> {{ equipment.item_type }}<br />
+                    <strong>تعداد:</strong> {{ equipment.quantity }} عدد<br />
+                    <strong>تاریخ ثبت:</strong> 
+                    
+                    {{ equipment.request_date }}
+                  
+                  </p>
+                  <p class="text-danger">
+                    <i class="bi bi-exclamation-triangle me-1"></i>
+                    این عمل غیر قابل بازگشت است!
+                  </p>
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                  >
+                    انصراف
+                  </button>
+                  <form
+                    action="{% url 'medical:equipment_delete' equipment_id=equipment.id %}"
+                    method="post"
+                    style="display: inline"
+                  >
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">حذف</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>سامانه جامع مدیریت پزشکی</title>
+    <!-- Bootstrap RTL CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css"
+    />
+    <!-- Bootstrap Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css"
+    />
+    <style>
+      @import url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@latest/Vazirmatn-font-face.css');
+      
+      body {
+        font-family: 'Vazirmatn', sans-serif; /* Apply Vazirmatn font */
+        background-color: #f8f9fa;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      input, select, textarea, button {
+          font-family: inherit;
+      }
+      .navbar {
+        background-color: #6c63ff !important;
+      }
+      .hero-section {
+        padding: 100px 0;
+        background: linear-gradient(135deg, #6c63ff, #4641ff);
+        color: white;
+      }
+      .feature-box {
+        border-radius: 1rem;
+        padding: 2rem;
+        height: 100%;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        transition: transform 0.3s;
+      }
+      .feature-box:hover {
+        transform: translateY(-5px);
+      }
+      .feature-icon {
+        background-color: #e9ecef;
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+      }
+      .feature-icon i {
+        font-size: 2rem;
+        color: #6c63ff;
+      }
+      .btn-primary {
+        background-color: #6c63ff;
+        border-color: #6c63ff;
+      }
+      .btn-primary:hover {
+        background-color: #5a52d5;
+        border-color: #5a52d5;
+      }
+      footer {
+        margin-top: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+      <div class="container">
+        <a class="navbar-brand" href="/">سامانه جامع مدیریت پزشکی</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link active" href="/">صفحه اصلی</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'users:login' %}">ورود به سیستم</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section text-center">
+      <div class="container">
+        <h1 class="display-4 fw-bold mb-4">سیستم جامع مدیریت پزشکی و درمانی</h1>
+        <p class="lead mb-5">
+          راهکاری یکپارچه برای مدیریت بخش‌های مختلف پزشکی، توانبخشی و مراقبتی
+        </p>
+        <a href="{% url 'users:login' %}" class="btn btn-light btn-lg px-4 me-md-2 fw-bold">
+          <i class="bi bi-box-arrow-in-right me-2"></i> ورود به سیستم
+        </a>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-5">
+      <div class="container">
+        <h2 class="text-center mb-5">ویژگی‌های سیستم</h2>
+        <div class="row g-4">
+          <div class="col-md-4">
+            <div class="feature-box bg-white">
+              <div class="feature-icon">
+                <i class="bi bi-heart-pulse"></i>
+              </div>
+              <h3 class="h5 text-center">مدیریت توانبخشی</h3>
+              <p class="text-muted">
+                مدیریت کامل بخش توانبخشی با پیگیری پیشرفت بیماران و ثبت جلسات
+              </p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="feature-box bg-white">
+              <div class="feature-icon">
+                <i class="bi bi-bandaid"></i>
+              </div>
+              <h3 class="h5 text-center">بخش پرستاری</h3>
+              <p class="text-muted">
+                سیستم ثبت و پیگیری خدمات پرستاری و مراقبت‌های روزانه بیماران
+              </p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="feature-box bg-white">
+              <div class="feature-icon">
+                <i class="bi bi-clipboard2-pulse"></i>
+              </div>
+              <h3 class="h5 text-center">سوابق پزشکی</h3>
+              <p class="text-muted">
+                سیستم جامع مدیریت سوابق پزشکی بیماران، نسخه‌ها و تاریخچه درمان
+              </p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="feature-box bg-white">
+              <div class="feature-icon">
+                <i class="bi bi-shield-plus"></i>
+              </div>
+              <h3 class="h5 text-center">سیستم مراقبت</h3>
+              <p class="text-muted">
+                رصد و پایش وضعیت بیماران و ثبت فرآیندهای مراقبتی و درمانی
+              </p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="feature-box bg-white">
+              <div class="feature-icon">
+                <i class="bi bi-tools"></i>
+              </div>
+              <h3 class="h5 text-center">مدیریت تجهیزات</h3>
+              <p class="text-muted">
+                سیستم ثبت و نگهداری تجهیزات و ابزارهای پزشکی و پیگیری نگهداری
+              </p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="feature-box bg-white">
+              <div class="feature-icon">
+                <i class="bi bi-ticket-detailed"></i>
+              </div>
+              <h3 class="h5 text-center">سیستم ارجاع</h3>
+              <p class="text-muted">
+                سیستم تیکت و ارجاع کارها بین بخش‌ها و مدیریت گردش کار
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6">
+            <h5>سامانه جامع مدیریت پزشکی</h5>
+            <p class="mb-3">
+              راهکاری یکپارچه برای مدیریت خدمات درمانی، توانبخشی و مراقبتی
+            </p>
+          </div>
+          <div class="col-md-6 text-md-end">
+            <h5>تماس با ما</h5>
+            <p class="mb-0">
+              <i class="bi bi-envelope me-2"></i> 
+            </p>
+            <p>
+              <i class="bi bi-telephone me-2"></i>
+            </p>
+          </div>
+        </div>
+        <hr />
+        <div class="text-center">
+          <p class="mb-0">© تمامی حقوق محفوظ است - 1404</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

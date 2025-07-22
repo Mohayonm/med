@@ -1,0 +1,307 @@
+{% extends "users/base.html" %}
+
+{% block content %}
+<!-- توابع جاوااسکریپت -->
+<script>
+function showUnderReviewFields() {
+  document.getElementById('select_status_alert').style.display = 'none';
+  document.getElementById('form_fields').style.display = 'block';
+  document.getElementById('under_review_form').style.display = 'block';
+  document.getElementById('provided_form').style.display = 'none';
+  document.getElementById('name-label').classList.remove('required');
+}
+
+function showProvidedFields() {
+  document.getElementById('select_status_alert').style.display = 'none';
+  document.getElementById('form_fields').style.display = 'block';
+  document.getElementById('under_review_form').style.display = 'none';
+  document.getElementById('provided_form').style.display = 'block';
+  document.getElementById('name-label').classList.add('required');
+  toggleOtherServiceField();
+}
+
+function toggleOtherServiceField() {
+  var serviceSelect = document.getElementById('id_service_performed');
+  var otherServiceDiv = document.getElementById('other_service_div');
+  
+  if (serviceSelect && serviceSelect.value === 'other') {
+    otherServiceDiv.style.display = 'block';
+  } else if (otherServiceDiv) {
+    otherServiceDiv.style.display = 'none';
+  }
+}
+</script>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'users:dashboard' %}">داشبورد</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'medical:service_list' department %}">بخش {{ department_name }}</a></li>
+          <li class="breadcrumb-item active" aria-current="page">درخواست جدید</li>
+        </ol>
+      </nav>
+      
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'error' %}alert-danger{% else %}alert-info{% endif %}" role="alert">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      <div class="card">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">درخواست خدمت {{ department_name }}</h5>
+        </div>
+        <div class="card-body">
+          <form method="post" action="" id="service-form">
+            {% csrf_token %}
+            
+            <!-- وضعیت درخواست -->
+            <div class="mb-4">
+              <label class="form-label fw-bold required">{{ form.status.label }}:</label>
+              <div class="d-flex gap-4">
+                <div class="form-check">
+                  <input type="radio" id="status_under_review" name="status" value="under_review" class="form-check-input" required onclick="showUnderReviewFields()" {% if form.status.value == 'under_review' %}checked{% endif %}>
+                  <label class="form-check-label" for="status_under_review">در دست بررسی</label>
+                </div>
+                <div class="form-check">
+                  <input type="radio" id="status_provided" name="status" value="provided" class="form-check-input" onclick="showProvidedFields()" {% if form.status.value == 'provided' %}checked{% endif %}>
+                  <label class="form-check-label" for="status_provided">منجر به خدمت</label>
+                </div>
+              </div>
+              {% if form.status.errors %}
+                <div class="text-danger mt-1">{{ form.status.errors }}</div>
+              {% endif %}
+            </div>
+            
+            <hr>
+            
+            <!-- بخش هشدار برای انتخاب وضعیت -->
+            <div id="select_status_alert" class="alert alert-info" {% if form.status.value %}style="display: none;"{% endif %}>
+              <i class="bi bi-info-circle me-2"></i>
+              لطفاً ابتدا وضعیت درخواست را انتخاب کنید تا فرم مربوطه نمایش داده شود.
+            </div>
+            
+            <!-- فرم‌های اصلی -->
+            <div id="form_fields" {% if not form.status.value %}style="display: none;"{% endif %}>
+              <!-- فیلدهای مشترک -->
+              <div class="row mb-3">
+                <div class="col-md-6">
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="{{ form.phone.id_for_label }}" class="form-label required">{{ form.phone.label }}:</label>
+                    {{ form.phone }}
+                    {% if form.phone.errors %}
+                      <div class="text-danger mt-1">{{ form.phone.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="{{ form.name.id_for_label }}" class="form-label" id="name-label">{{ form.name.label }}:</label>
+                    {{ form.name }}
+                    {% if form.name.errors %}
+                      <div class="text-danger mt-1">{{ form.name.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="{{ form.referrer_name.id_for_label }}" class="form-label">{{ form.referrer_name.label }}:</label>
+                {{ form.referrer_name }}
+                {% if form.referrer_name.errors %}
+                  <div class="text-danger mt-1">{{ form.referrer_name.errors }}</div>
+                {% endif %}
+
+              </div>
+
+              
+              <!-- فیلد درخواست خدمت -->
+              <div id="under_review_form" {% if form.status.value != 'under_review' %}style="display: none;"{% endif %}>
+                <div class="mb-3">
+                  <label for="{{ form.requested_service.id_for_label }}" class="form-label">{{ form.requested_service.label }}:</label>
+                  {{ form.requested_service }}
+                  {% if form.requested_service.errors %}
+                    <div class="text-danger mt-1">{{ form.requested_service.errors }}</div>
+                  {% endif %}
+                </div>
+                
+                <!-- بخش توضیحات -->
+                <div class="mb-3">
+                  <label for="{{ form.description.id_for_label }}" class="form-label">توضیحات:</label>
+                  {{ form.description }}
+                  {% if form.description.errors %}
+                    <div class="text-danger mt-1">{{ form.description.errors }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              
+              <!-- فیلدهای منجر به خدمت -->
+              <div id="provided_form" {% if form.status.value != 'provided' %}style="display: none;"{% endif %}>
+                <div class="mb-3">
+                  <label for="{{ form.address.id_for_label }}" class="form-label required">{{ form.address.label }}:</label>
+                  {{ form.address }}
+                  {% if form.address.errors %}
+                    <div class="text-danger mt-1">{{ form.address.errors }}</div>
+                  {% endif %}
+                </div>
+                
+                <div class="row mb-3">
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="id_service_date" class="form-label required">{{ form.service_date.label }}:</label>
+                      {{ form.service_date }}
+                      <small class="text-muted">فرمت: ۱۴۰۳/۰۱/۰۱</small>
+                      {% if form.service_date.errors %}
+                        <div class="text-danger mt-1">{{ form.service_date.errors }}</div>
+                      {% endif %}
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="id_service_performed" class="form-label required">{{ form.service_performed.label }}:</label>
+                      <select name="service_performed" id="id_service_performed" class="form-select" onchange="toggleOtherServiceField()">
+                        {% for value, label in form.fields.service_performed.choices %}
+                          <option value="{{ value }}" {% if form.service_performed.value == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                      </select>
+                      {% if form.service_performed.errors %}
+                        <div class="text-danger mt-1">{{ form.service_performed.errors }}</div>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="mb-3" id="other_service_div" {% if form.service_performed.value != 'other' %}style="display: none;"{% endif %}>
+                  <label for="{{ form.other_service.id_for_label }}" class="form-label required">{{ form.other_service.label }}:</label>
+                  <textarea name="other_service" id="id_other_service" class="form-control" rows="2" placeholder="لطفاً نام خدمت انجام شده را وارد کنید">{{ form.other_service.value|default:'' }}</textarea>
+                  {% if form.other_service.errors %}
+                    <div class="text-danger mt-1">{{ form.other_service.errors }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              
+              <div class="mb-3">
+                <button type="submit" class="btn btn-primary">ثبت درخواست</button>
+                <a href="{% url 'medical:service_list' department %}" class="btn btn-outline-secondary me-2">انصراف</a>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<link rel="stylesheet" href="https://unpkg.com/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://unpkg.com/persian-date@1.1.0/dist/persian-date.min.js"></script>
+<script src="https://unpkg.com/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
+
+<script>
+
+  // Simple thousand separator formatter
+  // document.addEventListener('DOMContentLoaded', function() {
+  //   // Get all money input fields
+  //   const moneyInputs = document.querySelectorAll('.money-input');
+    
+  //   // Add blur event to format when focus is lost
+  //   moneyInputs.forEach(function(input) {
+  //     input.addEventListener('blur', function() {
+  //       if (!this.value) return;
+        
+  //       // Remove any non-digit characters
+  //       let value = this.value.replace(/\D/g, '');
+        
+  //       // Format with thousand separators
+  //       if (value) {
+  //         // Format the number with commas
+  //         this.value = Number(value).toLocaleString('fa-IR');
+  //       }
+  //     });
+      
+  //     // Remove formatting when focused
+  //     input.addEventListener('focus', function() {
+  //       this.value = this.value.replace(/[^\d]/g, '');
+  //     });
+  //   });
+    
+  //   // Handle form submission - remove formatting
+  //   const form = document.querySelector('form');
+  //   if (form) {
+  //     form.addEventListener('submit', function() {
+  //       const inputs = document.querySelectorAll('.money-input');
+  //       inputs.forEach(function(input) {
+  //         input.value = input.value.replace(/[^\d]/g, '');
+  //       });
+  //     });
+  //   }
+  // });
+
+
+
+$(document).ready(function() {
+  
+  // تنظیم تقویم شمسی
+  $('#id_service_date').persianDatepicker({
+    format: 'YYYY/MM/DD',
+    initialValueType: 'persian',
+    autoClose: true,
+    persianDigit: false,
+    observer: true,
+    calendarType: 'persian',
+    calendar: {
+      persian: {
+        locale: 'fa',
+        showHint: true,
+        leapYearMode: 'algorithmic'
+      }
+    },
+    navigator: {
+      enabled: true,
+      scroll: { enabled: true },
+      text: { btnNextText: '<', btnPrevText: '>' }
+    },
+    toolbox: {
+      enabled: true,
+      calendarSwitch: { enabled: false },
+      todayButton: { enabled: true, text: { fa: 'امروز' } },
+      submitButton: { enabled: true, text: { fa: 'تایید' } },
+      text: { btnToday: 'امروز' }
+    }
+  });
+  
+  // اجرای اولیه نمایش فیلدها بر اساس وضعیت
+  {% if form.status.value == 'provided' %}
+    showProvidedFields();
+  {% elif form.status.value == 'under_review' %}
+    showUnderReviewFields();
+  {% endif %}
+  
+  // اجرای اولیه نمایش/عدم نمایش فیلد سایر خدمات
+  toggleOtherServiceField();
+});
+</script>
+
+<style>
+  .required:after {
+    content: " *";
+    color: red;
+  }
+  
+  /* استایل‌های تقویم شمسی */
+  .datepicker-plot-area {
+    font-family: inherit;
+    direction: rtl;
+  }
+</style>
+{% endblock %}

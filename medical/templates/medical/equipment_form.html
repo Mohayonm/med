@@ -1,0 +1,308 @@
+{% extends "users/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'users:dashboard' %}">داشبورد</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'medical:equipment_list' %}">تجهیزات</a></li>
+          <li class="breadcrumb-item active" aria-current="page">ثبت تجهیزات جدید</li>
+        </ol>
+      </nav>
+      
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'error' %}alert-danger{% else %}alert-info{% endif %}" role="alert">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      <div class="card">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">ثبت تجهیزات جدید</h5>
+        </div>
+        <div class="card-body">
+          <form method="post" action="" id="equipment-form" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.media }}
+            
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="{{ form.item_type.id_for_label }}" class="form-label required">{{ form.item_type.label }}:</label>
+                  {{ form.item_type }}
+                  {% if form.item_type.errors %}
+                    <div class="text-danger mt-1">{{ form.item_type.errors }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="{{ form.quantity.id_for_label }}" class="form-label required">{{ form.quantity.label }}:</label>
+                  {{ form.quantity }}
+                  {% if form.quantity.errors %}
+                    <div class="text-danger mt-1">{{ form.quantity.errors }}</div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="{{ form.request_date.id_for_label }}" class="form-label required">{{ form.request_date.label }}:</label>
+                  {{ form.request_date }}
+                  {% if form.request_date.errors %}
+                    <div class="text-danger mt-1">{{ form.request_date.errors }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              
+              
+            
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="{{ form.referrer_name.id_for_label }}" class="form-label">{{ form.referrer_name.label }}:</label>
+                  {{ form.referrer_name }}
+                  {% if form.referrer_name.errors %}
+                    <div class="text-danger mt-1">{{ form.referrer_name.errors }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <!-- بخش مربوط به فیلدهای مالی -->
+<div class="row mb-3">
+  <div class="col-md-4">
+    <div class="mb-3">
+      <label for="{{ form.total_amount.id_for_label }}" class="form-label">{{ form.total_amount.label }}:</label>
+      {{ form.total_amount }}
+      {% if form.total_amount.errors %}
+        <div class="text-danger mt-1">{{ form.total_amount.errors }}</div>
+      {% endif %}
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="mb-3">
+      <label for="{{ form.center_share.id_for_label }}" class="form-label">{{ form.center_share.label }}:</label>
+      {{ form.center_share }}
+      {% if form.center_share.errors %}
+        <div class="text-danger mt-1">{{ form.center_share.errors }}</div>
+      {% endif %}
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="mb-3">
+      <label for="{{ form.consume_share.id_for_label }}" class="form-label">{{ form.consume_share.label }}:</label>
+      {{ form.consume_share }}
+      {% if form.consume_share.errors %}
+        <div class="text-danger mt-1">{{ form.consume_share.errors }}</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+              </div>
+            </div>
+            <!-- اضافه کردن در بخش مناسب، مثلاً بخش مالی -->
+<div class="row mb-3">
+  <div class="col-12">
+    <div class="mb-3">
+      <label class="form-label">{{ form.payment_receiver.label }}:</label>
+      <div class="d-flex gap-4">
+        {% for radio in form.payment_receiver %}
+          <div class="form-check">
+            {{ radio.tag }}
+            <label class="form-check-label" for="{{ radio.id_for_label }}">{{ radio.choice_label }}</label>
+          </div>
+        {% endfor %}
+      </div>
+      {% if form.payment_receiver.errors %}
+        <div class="text-danger mt-1">{{ form.payment_receiver.errors }}</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+            <div class="row mb-3">
+              
+            
+              
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="{{ form.referred_to.id_for_label }}" class="form-label">{{ form.referred_to.label }}:</label>
+                  {{ form.referred_to }}
+                  <small class="text-muted d-block mt-1">
+                    <i class="bi bi-info-circle"></i>
+                    در صورت ارجاع، اطلاعات این تجهیزات به کاربر انتخاب شده ارسال خواهد شد.
+                  </small>
+                  {% if form.referred_to.errors %}
+                    <div class="text-danger mt-1">{{ form.referred_to.errors }}</div>
+                  {% endif %}
+                </div>
+                <div class="mb-3">
+                  <label for="{{ form.referral_reason.id_for_label }}" class="form-label">علت ارجاع:</label>
+                  {{ form.referral_reason }}
+                  <small class="text-muted d-block mt-1">
+                    <i class="bi bi-info-circle"></i>
+                    توضیح دهید چرا این تجهیزات ارجاع داده می‌شود
+                  </small>
+                  {% if form.referral_reason.errors %}
+                    <div class="text-danger mt-1">{{ form.referral_reason.errors }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="{{ form.receipt_image.id_for_label }}" class="form-label">{{ form.receipt_image.label }}:</label>
+                  {{ form.receipt_image }}
+                  <small class="text-muted d-block mt-1">
+                    <i class="bi bi-info-circle"></i>
+                    تصویر رسید پرداخت را بارگذاری کنید (اختیاری)
+                  </small>
+                  {% if form.receipt_image.errors %}
+                    <div class="text-danger mt-1">{{ form.receipt_image.errors }}</div>
+                  {% endif %}
+                </div>
+                <div class="mb-3">
+                  <label for="{{ form.description.id_for_label }}" class="form-label">{{ form.description.label }}:</label>
+                  {{ form.description }}
+                  <small class="text-muted d-block mt-1">
+                    <i class="bi bi-info-circle"></i>
+                    هرگونه توضیح اضافی در مورد این تجهیزات را اینجا وارد کنید
+                  </small>
+                  {% if form.description.errors %}
+                    <div class="text-danger mt-1">{{ form.description.errors }}</div>
+                  {% endif %}
+                </div>
+            </div>
+            
+            <div class="mb-3">
+              <button type="submit" class="btn btn-primary">ثبت تجهیزات</button>
+              <a href="{% url 'medical:equipment_list' %}" class="btn btn-outline-secondary me-2">بازگشت</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+<link rel="stylesheet" href="https://unpkg.com/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://unpkg.com/persian-date@1.1.0/dist/persian-date.min.js"></script>
+<script src="https://unpkg.com/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
+
+<script>
+$(document).ready(function() {
+  // تقویم شمسی برای فیلد تاریخ
+  try {
+    console.log('Initializing request date picker');
+    $('#id_request_date').persianDatepicker({
+      format: 'YYYY/MM/DD',
+      initialValueType: 'persian',
+      autoClose: true,
+      persianDigit: false,
+      observer: true,
+      calendarType: 'persian',
+      calendar: {
+        persian: {
+          locale: 'fa',
+          showHint: true,
+          leapYearMode: 'algorithmic'
+        }
+      },
+      navigator: {
+        enabled: true,
+        scroll: { enabled: true },
+        text: { btnNextText: '<', btnPrevText: '>' }
+      },
+      toolbox: {
+        enabled: true,
+        calendarSwitch: { enabled: false },
+        todayButton: { enabled: true, text: { fa: 'امروز' } },
+        submitButton: { enabled: true, text: { fa: 'تایید' } },
+        text: { btnToday: 'امروز' }
+      }
+    });
+    console.log('Persian datepicker successfully initialized');
+  } catch (e) {
+    console.error('Error initializing persian datepicker:', e);
+  }
+
+  // تبدیل اعداد فارسی به انگلیسی و حذف جداکننده‌های هزارتایی قبل از ارسال فرم
+  $('form').submit(function() {
+    $('.money-input').each(function() {
+      // حذف همه کاراکترهای غیر عددی
+      let value = $(this).val().replace(/[^\d]/g, '');
+      if (value) {
+        $(this).val(value);
+      } else {
+        $(this).val('0');
+      }
+    });
+    return true;
+  });
+
+  // تابع برای فرمت‌دهی عدد با ویرگول
+  function formatNumber(num) {
+    if (num === null || num === undefined || num === '') return '';
+    // حذف هرگونه کاراکتر غیر عددی به جز نقطه اعشار (اگر نیاز بود)
+    let value = String(num).replace(/[^\d]/g, '');
+    if (!value) return '';
+    // تبدیل به عدد و سپس به رشته با جداکننده هزارگان
+    return parseInt(value, 10).toLocaleString('en-US');
+  }
+
+  // اعمال فرمت‌دهی هنگام تایپ
+  $('.money-input').on('input', function(e) {
+    let value = $(this).val();
+    let formattedValue = formatNumber(value);
+    $(this).val(formattedValue);
+  });
+
+  // فرمت‌دهی مقادیر اولیه در زمان بارگذاری صفحه (مخصوص فرم‌های ویرایش)
+  $('.money-input').each(function() {
+      let initialValue = $(this).val();
+      if (initialValue) {
+          $(this).val(formatNumber(initialValue));
+      }
+  });
+
+  // حذف ویرگول‌ها قبل از ارسال فرم (این کد احتمالا از قبل وجود دارد، مطمئن شوید که هست)
+  $('form').submit(function() {
+    $('.money-input').each(function() {
+      let value = $(this).val().replace(/[^\d]/g, ''); // حذف همه کاراکترهای غیر عددی
+      // اگر مقدار خالی بود یا فقط صفر بود، آن را به 0 تبدیل کن
+      // اگر فیلد می‌تواند خالی باشد، این بخش را تنظیم کنید
+      if (!value || parseInt(value, 10) === 0) {
+         // $(this).val('0'); // اگر مقدار پیش‌فرض 0 می‌خواهید
+         $(this).val(''); // اگر می‌خواهید خالی ارسال شود (مطمئن شوید مدل اجازه null/blank می‌دهد)
+      } else {
+         $(this).val(value);
+      }
+    });
+    return true; // ادامه ارسال فرم
+  });
+});
+</script>
+
+<style>
+  .required:after {
+    content: " *";
+    color: red;
+  }
+  
+  /* استایل‌های تقویم شمسی */
+  .datepicker-plot-area {
+    font-family: inherit;
+    direction: rtl;
+    z-index: 1000; /* افزایش z-index برای اطمینان از نمایش تقویم بر روی سایر عناصر */
+  }
+</style>
+{% endblock %}

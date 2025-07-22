@@ -1,0 +1,38 @@
+{% extends "users/base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'users:dashboard' %}">داشبورد</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'users:user_list' %}">مدیریت کاربران</a></li>
+          <li class="breadcrumb-item active" aria-current="page">حذف کاربر</li>
+        </ol>
+      </nav>
+      
+      <div class="card">
+        <div class="card-header bg-danger text-white">
+          <h5 class="mb-0">حذف کاربر</h5>
+        </div>
+        <div class="card-body">
+          <div class="alert alert-warning">
+            <h4 class="alert-heading">هشدار!</h4>
+            <p>آیا از حذف کاربر <strong>{{ user.user_name }}</strong> ({{ user.first_name }} {{ user.last_name }}) اطمینان دارید؟</p>
+            <p>این عملیات غیرقابل برگشت است و تمام اطلاعات این کاربر حذف خواهد شد.</p>
+          </div>
+          
+          <form method="post" action="">
+            {% csrf_token %}
+            <div class="mb-3">
+              <button type="submit" class="btn btn-danger">حذف کاربر</button>
+              <a href="{% url 'users:user_list' %}" class="btn btn-outline-secondary me-2">انصراف</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

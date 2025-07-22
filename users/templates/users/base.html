@@ -1,0 +1,292 @@
+{% load user_filters %}
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>سیستم مدیریت</title>
+    <!-- Bootstrap RTL CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css"
+    />
+    <!-- Bootstrap Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css"
+    />
+    <style>
+      @import url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@latest/Vazirmatn-font-face.css');
+
+      body {
+        font-family: 'Vazirmatn', sans-serif; /* Apply Vazirmatn font */
+        min-height: 100vh;
+      }
+      input, select, textarea, button {
+          font-family: inherit;
+      }
+
+      .sidebar {
+        position: sticky;
+        top: 0;
+        right: 0;
+        height: 100vh;
+        z-index: 100;
+        padding: 48px 0 0;
+        background-color: #f8f9fa;
+        width: 20%;
+        min-width: 240px;
+        max-width: 280px;
+        box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.1);
+      }
+      .sidebar-sticky {
+        height: calc(100vh - 48px);
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+      .sidebar .nav-link {
+        color: #495057;
+        padding: 0.75rem 1.25rem;
+      }
+      .sidebar .nav-link.active {
+        color: #6c63ff;
+        font-weight: bold;
+      }
+      .sidebar .nav-link:hover {
+        color: #6c63ff;
+      }
+      .sidebar-heading {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+      }
+      .main-content {
+        flex: 1;
+        padding-right: 15px;
+        padding-left: 15px;
+      }
+      .card {
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+      }
+      .navbar {
+        background-color: #6c63ff !important;
+      }
+      .nav-icon {
+        margin-left: 0.5rem;
+      }
+
+      @media (max-width: 767.98px) {
+        .sidebar {
+          width: 100%;
+          height: auto;
+          position: relative;
+          padding-top: 0;
+          display: none;
+        }
+        .sidebar.show {
+          display: block;
+        }
+        .main-content {
+          margin-right: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Top Navbar -->
+    <nav class="navbar navbar-expand-md navbar-dark bg-primary sticky-top px-3">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'users:dashboard' %}">سیستم مدیریت</a>
+        <button class="navbar-toggler" type="button" id="sidebar-toggle">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+          <ul class="navbar-nav me-auto mb-2 mb-md-0"></ul>
+          <div class="d-flex">
+            <span class="navbar-text me-3">{{ request.user.first_name }} {{ request.user.last_name }}</span>
+            <a href="{% url 'users:logout' %}" class="btn btn-outline-light btn-sm">خروج</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+        <!-- Sidebar -->
+        <nav id="sidebarMenu" class="sidebar col-md-3 col-lg-2 d-md-block">
+          <div class="sidebar-sticky pt-3">
+            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+              <span>منوی اصلی</span>
+            </h6>
+            <ul class="nav flex-column">
+            <li class="nav-item">
+              <a class="nav-link {% if request.resolver_match.kwargs.department == 'rehabilitation' %}active{% endif %}" href="{% url 'medical:service_list' 'rehabilitation' %}">
+                <i class="bi bi-heart-pulse nav-icon"></i>
+                توانبخشی
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if request.resolver_match.kwargs.department == 'nursing' %}active{% endif %}" href="{% url 'medical:service_list' 'nursing' %}">
+                <i class="bi bi-bandaid nav-icon"></i>
+                پرستاری
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if request.resolver_match.kwargs.department == 'medical' %}active{% endif %}" href="{% url 'medical:service_list' 'medical' %}">
+                <i class="bi bi-clipboard2-pulse nav-icon"></i>
+                پزشکی
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if request.resolver_match.kwargs.department == 'care' %}active{% endif %}" href="{% url 'medical:service_list' 'care' %}">
+                <i class="bi bi-shield-plus nav-icon"></i>
+                مراقبت
+              </a>
+            </li>
+              <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'equipment_list' or request.resolver_match.url_name == 'equipment_form' or request.resolver_match.url_name == 'equipment_detail' %}active{% endif %}" href="{% url 'medical:equipment_list' %}">
+                  <i class="bi bi-tools nav-icon"></i>
+                  تجهیزات
+                </a>
+              </li>
+            </ul>
+            <!-- جایگزینی بخش مدیریت با این کد -->
+
+<!-- عنوان بخش مدیریت فقط اگر کاربر سوپریوزر یا مدیر باشد نمایش داده می‌شود -->
+{% if request.user.is_superuser or request.user|has_role:"manager" %}
+<h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+  <span>مدیریت</span>
+</h6>
+<ul class="nav flex-column">
+  <!-- تنظیم سطح دسترسی: فقط سوپریوزر -->
+  {% if request.user.is_superuser %}
+  <li class="nav-item">
+    <a class="nav-link {% if request.resolver_match.url_name == 'user_list' or request.resolver_match.url_name == 'user_permissions' %}active{% endif %}" href="{% url 'users:user_list' %}">
+      <i class="bi bi-key nav-icon"></i>
+      تنظیم سطح دسترسی
+    </a>
+  </li>
+  {% endif %}
+  
+  <!-- بک آپ و بازیابی: سوپریوزر و مدیر -->
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'exports:dashboard' %}">
+      <i class="bi bi-cloud-arrow-up-fill nav-icon"></i>
+      بک اپ و بازیابی
+    </a>
+  </li>
+  
+  <!-- نمایش تیکت‌ها: سوپریوزر و مدیر -->
+  <li class="nav-item">
+    <a class="nav-link " href="{% url 'tickets:admin_all_tickets' %}">
+      <i class="bi bi-ticket-detailed-fill nav-icon"></i>
+      نمایش تمام تیکت ها
+    </a>
+  </li>
+</ul>
+{% endif %}
+            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+              <span>کاربری</span>
+            </h6>
+            <ul class="nav flex-column mb-2">
+              <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'user_list' or request.resolver_match.url_name == 'user_permissions' %}active{% endif %}" href="{% url 'users:profile' %}">
+                  <i class="bi bi-person-circle nav-icon"></i>
+                  پروفایل کاربری
+                </a>
+                <li class="nav-item">
+                  <a class="nav-link {% if request.resolver_match.url_name == 'create_ticket' %}active{% endif %}" href="{% url 'tickets:create_ticket' %}">
+                    <i class="bi bi-ticket-detailed nav-icon"></i>
+                    ارجاع (تیکت)
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link {% if request.resolver_match.url_name == 'ticket_inbox' or request.resolver_match.url_name == 'ticket_sent' or request.resolver_match.url_name == 'ticket_detail' %}active{% endif %}" href="{% url 'tickets:ticket_inbox' %}">
+                    <i class="bi bi-inboxes nav-icon"></i>
+                    تیکت ها و ارجاع ها
+                  </a>
+                </li>
+
+            </ul>
+          </div>
+        </nav>
+
+        <!-- Main content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content py-4">
+          {% block content %}{% endblock %}
+        </main>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      // Toggle sidebar on mobile
+      document.getElementById("sidebar-toggle").addEventListener("click", function () {
+        document.getElementById("sidebarMenu").classList.toggle("show");
+      });
+    </script>
+{% block extra_js %}
+{{ block.super }}
+<script>
+// Format numbers with thousand separators
+document.addEventListener('DOMContentLoaded', function() {
+    // Find all numeric input fields - target both number type AND those with money-format class
+    const numericInputs = document.querySelectorAll('input[type="number"], input.money-format');
+    
+    numericInputs.forEach(function(input) {
+        // Change to text type to allow thousand separators
+        input.type = 'text';
+        input.classList.add('money-format'); // Mark as money format field
+        
+        // Add formatting on focus out
+        input.addEventListener('blur', function(e) {
+            formatNumber(e.target);
+        });
+        
+        // Remove formatting on focus to make editing easier
+        input.addEventListener('focus', function(e) {
+            const value = e.target.value.replace(/,/g, '');
+            e.target.value = value;
+        });
+        
+        // Initialize with formatting
+        formatNumber(input);
+    });
+    
+    // Handle form submission - remove commas before submitting
+    const forms = document.querySelectorAll('form');
+    forms.forEach(function(form) {
+        form.addEventListener('submit', function() {
+            // Only target money-format fields for comma removal
+            const moneyFields = form.querySelectorAll('input.money-format');
+            moneyFields.forEach(function(field) {
+                if (field.value) {
+                    field.value = field.value.replace(/,/g, '');
+                    console.log(`Submitted value for ${field.name}: ${field.value}`);
+                }
+            });
+        });
+    });
+    
+    // Format number with thousand separators
+    function formatNumber(input) {
+        if (!input.value) return;
+        
+        // Remove any existing commas
+        let value = input.value.replace(/,/g, '');
+        
+        // Make sure it's a valid number
+        if (isNaN(value)) {
+            return;
+        }
+        
+        // Format with thousand separators
+        input.value = Number(value).toLocaleString('fa-IR');
+    }
+});
+</script>
+{% endblock %}
+  </body>
+</html>

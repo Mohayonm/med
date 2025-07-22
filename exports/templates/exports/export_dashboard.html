@@ -1,0 +1,146 @@
+{% extends "users/base.html" %} {% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <div
+        class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
+      >
+        <h1 class="h2">گزارش‌گیری و خروجی اکسل</h1>
+      </div>
+
+      {% if error %}
+      <div class="alert alert-danger">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        {{ error }}
+      </div>
+      {% endif %}
+
+      <div class="alert alert-info">
+        <i class="bi bi-info-circle me-2"></i>
+        از این صفحه می‌توانید گزارش‌های مختلف را به صورت فایل اکسل دریافت کنید.
+      </div>
+
+      <div class="row g-4 mt-3">
+        <!-- خدمات -->
+        <div class="col-md-4">
+          <div class="card h-100">
+            <div class="card-header bg-primary text-white">
+              <h5 class="mb-0">خدمات</h5>
+            </div>
+            <div class="card-body">
+              <p class="card-text mb-3">
+                خروجی اکسل از خدمات پزشکی و توانبخشی به تفکیک بخش:
+              </p>
+
+              <div class="d-grid gap-2">
+                <a
+                  href="{% url 'exports:services_by_department' 'rehabilitation' %}"
+                  class="btn btn-outline-primary"
+                >
+                  <i class="bi bi-file-excel me-1"></i>
+                  خدمات توانبخشی
+                </a>
+                <a
+                  href="{% url 'exports:services_by_department' 'nursing' %}"
+                  class="btn btn-outline-primary"
+                >
+                  <i class="bi bi-file-excel me-1"></i>
+                  خدمات پرستاری
+                </a>
+                <a
+                  href="{% url 'exports:services_by_department' 'medical' %}"
+                  class="btn btn-outline-primary"
+                >
+                  <i class="bi bi-file-excel me-1"></i>
+                  خدمات پزشکی
+                </a>
+                <a
+                  href="{% url 'exports:services_by_department' 'care' %}"
+                  class="btn btn-outline-primary"
+                >
+                  <i class="bi bi-file-excel me-1"></i>
+                  خدمات مراقبت
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- سایر گزارش‌ها -->
+        <div class="col-md-4">
+          <div class="card h-100">
+            <div class="card-header bg-primary text-white">
+              <h5 class="mb-0">سایر گزارش‌ها</h5>
+            </div>
+            <div class="card-body">
+              <p class="card-text mb-3">خروجی اکسل از سایر بخش‌های سیستم:</p>
+
+              <div class="d-grid gap-2">
+                <a
+                  href="{% url 'exports:equipment' %}"
+                  class="btn btn-outline-primary"
+                >
+                  <i class="bi bi-file-excel me-1"></i>
+                  تجهیزات
+                </a>
+
+                <a
+                  href="{% url 'exports:tickets' %}"
+                  class="btn btn-outline-primary"
+                >
+                  <i class="bi bi-file-excel me-1"></i>
+                  تیکت‌ها
+                </a>
+              </div>
+
+              <div class="alert alert-secondary mt-4">
+                <h6>راهنما:</h6>
+                <p class="small mb-0">
+                  <i class="bi bi-info-circle me-1"></i>
+فایل دانلود شده را میتوان در اکسل باز نمود و یا در نرم‌افزارهای مشابه مانند
+                  Google Sheets باز کرد.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- پشتیبان‌گیری -->
+        <div class="col-md-4">
+          <div class="card h-100">
+            <div class="card-header bg-danger text-white">
+              <h5 class="mb-0">پشتیبان‌گیری دیتابیس</h5>
+            </div>
+            <div class="card-body">
+              <p class="card-text mb-3">
+                دانلود فایل دیتابیس برای پشتیبان‌گیری (این قابلیت فقط برای مدیران سیستم فعال است):
+              </p>
+
+              <div class="d-grid gap-2">
+                {% if user.is_staff %}
+                <a
+                  href="{% url 'exports:download_database' %}"
+                  class="btn btn-outline-danger"
+                >
+                  <i class="bi bi-database-down me-1"></i>
+                  دانلود پشتیبان دیتابیس
+                </a>
+                <p class="text-muted small mt-2">
+                  <i class="bi bi-info-circle"></i>
+                  این فایل حاوی کلیه داده‌های سیستم است و باید در محلی امن نگهداری شود.
+                </p>
+                {% else %}
+                <div class="alert alert-secondary">
+                  <i class="bi bi-lock me-1"></i>
+                  دسترسی به این بخش فقط برای مدیران سیستم مجاز است.
+                </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends "users/base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+  <h1 class="h2">داشبورد</h1>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-6 col-lg-4">
+    <div class="card card-dashboard">
+      <div class="card-body">
+        <h5 class="card-title">
+          <i class="bi bi-heart-pulse text-danger me-2"></i> توانبخشی
+        </h5>
+        <p class="card-text">مدیریت بخش توانبخشی و خدمات مربوطه</p>
+        <a href="{% url 'medical:service_list' 'rehabilitation' %}" class="btn btn-sm btn-primary">ورود به بخش</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6 col-lg-4">
+    <div class="card card-dashboard">
+      <div class="card-body">
+        <h5 class="card-title">
+          <i class="bi bi-bandaid text-info me-2"></i> پرستاری
+        </h5>
+        <p class="card-text">
+          مدیریت امور پرستاری و مراقبت‌های روزانه
+        </p>
+        <a href="{% url 'medical:service_list' 'nursing' %}" class="btn btn-sm btn-primary">ورود به بخش</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6 col-lg-4">
+    <div class="card card-dashboard">
+      <div class="card-body">
+        <h5 class="card-title">
+          <i class="bi bi-clipboard2-pulse text-success me-2"></i>
+          پزشکی
+        </h5>
+        <p class="card-text">مدیریت بخش پزشکی و خدمات درمانی</p>
+        <a href="{% url 'medical:service_list' 'medical' %}" class="btn btn-sm btn-primary">ورود به بخش</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6 col-lg-4">
+    <div class="card card-dashboard">
+      <div class="card-body">
+        <h5 class="card-title">
+          <i class="bi bi-shield-plus text-warning me-2"></i> مراقبت
+        </h5>
+        <p class="card-text">سیستم مراقبت و پایش وضعیت بیماران</p>
+        <a href="{% url 'medical:service_list' 'care' %}" class="btn btn-sm btn-primary">ورود به بخش</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6 col-lg-4">
+    <div class="card card-dashboard">
+      <div class="card-body">
+        <h5 class="card-title">
+          <i class="bi bi-tools text-secondary me-2"></i> تجهیزات
+        </h5>
+        <p class="card-text">مدیریت تجهیزات و ابزارهای پزشکی</p>
+        <a href="{% url 'medical:equipment_list' %}" class="btn btn-sm btn-primary">ورود به بخش</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6 col-lg-4">
+    <div class="card card-dashboard">
+      <div class="card-body">
+        <h5 class="card-title">
+          <i class="bi bi-ticket-detailed text-primary me-2"></i>
+          تیکت‌ها
+        </h5>
+        <p class="card-text">
+          مدیریت تیکت‌ها و درخواست‌های ارجاع شده
+        </p>
+        <a href="/tickets/inbox/" class="btn btn-sm btn-primary">مشاهده تیکت‌ها</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

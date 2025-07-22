@@ -1,0 +1,192 @@
+{% extends "users/base.html" %}
+{% load custom_filters %}  <!-- لود کردن فیلتر سفارشی -->
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'users:dashboard' %}">داشبورد</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'medical:service_list' department %}">بخش {{ department_name }}</a></li>
+          <li class="breadcrumb-item active" aria-current="page">جزئیات درخواست</li>
+        </ol>
+      </nav>
+      
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'error' %}alert-danger{% else %}alert-info{% endif %}" role="alert">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      <div class="card">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">جزئیات درخواست خدمت {{ department_name }}</h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                {% comment %} استفاده از فیلتر to_jalali {% endcomment %}
+                <strong>تاریخ ثبت:</strong> {{ service.created_at|to_jalali }}
+              </div>
+              <div class="mb-3">
+                <strong>نام بیمار:</strong> {{ service.name|default:"-" }}
+              </div>
+              <div class="mb-3">
+                <strong>شماره تماس:</strong> {{ service.phone }}
+              </div>
+              <div class="mb-3">
+                <strong>وضعیت:</strong>
+                {% if service.status == 'under_review' %}
+                  <span class="badge bg-warning text-dark">در دست بررسی</span>
+                {% elif service.status == 'provided' %}
+                  <span class="badge bg-success">منجر به خدمت</span>
+                {% endif %}
+              </div>
+            </div>
+            <div class="col-md-6">
+              {% if service.status == 'under_review' %}
+                <div class="mb-3">
+                  <strong>خدمت مورد نیاز:</strong> {{ service.requested_service|default:"-" }}
+                </div>
+                <!-- نمایش توضیحات در حالت در دست بررسی -->
+                {% if service.description %}
+                <div class="mb-3">
+                  <strong>توضیحات:</strong> 
+                  <p>{{ service.description }}</p>
+                </div>
+                {% endif %}
+              {% elif service.status == 'provided' %}
+                <div class="mb-3">
+                  <strong>آدرس:</strong> {{ service.address|default:"-" }}
+                </div>
+                <div class="mb-3">
+                  <strong>تاریخ ارائه خدمت:</strong> {{ service.service_date|default:"-" }}
+                </div>
+                <div class="mb-3">
+                  <strong>خدمت انجام شده:</strong>
+                  {% if service.service_performed == "occupational_therapy" %}کاردرمانی
+                  {% elif service.service_performed == "speech_therapy" %}گفتار درمانی
+                  {% elif service.service_performed == "physiotherapy" %}فیزیوتراپی
+                  {% elif service.service_performed == "injection" %}تزریقات
+                  {% elif service.service_performed == "wound_dressing" %}پانسمان زخم
+                  {% elif service.service_performed == "bladder_catheterization" %}سونداژ مثانه
+                  {% elif service.service_performed == "antibiotic_therapy" %}آنتی بیوتیک تراپی
+                  {% elif service.service_performed == "serum_trap" %}سرم تراپ
+                  {% elif service.service_performed == "general_visit" %}ویزیت عمومی
+                  {% elif service.service_performed == "specialist_visit" %}ویزیت تخصصی
+                  {% elif service.service_performed == "super_specialist_visit" %}ویزیت فوق تخصصی
+                  {% elif service.service_performed == "home_care" %}مراقبت در خانه
+                  {% elif service.service_performed == "hospital_care" %}مراقبت در بیمارستان
+                  {% elif service.service_performed == "other" %}{{ service.other_service }}
+                  {% else %}-{% endif %}
+                </div>
+              {% endif %}
+            </div>
+          </div>
+          
+          {% if service.status == 'provided' and service.financial_info %}
+            <hr>
+            <h5 class="mt-4 mb-3">اطلاعات مالی</h5>
+            <div class="mb-3">
+              <a href="{% url 'medical:service_financial_edit' service_id=service.id %}" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-pencil me-1"></i>
+                ویرایش اطلاعات مالی
+              </a>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <strong>نام کارشناس/پزشک:</strong> {{ service.financial_info.specialist_name }}
+                </div>
+                <div class="mb-3">
+                  <strong>تاریخ تراکنش:</strong> {{ service.financial_info.transaction_date|default:"-" }}
+                </div>
+                <div class="mb-3">
+                  <strong>نوع مصرفی:</strong> {{ service.financial_info.consumed_type|default:"-" }}
+                </div>
+                <!-- در بخش اطلاعات مالی -->
+<div class="mb-3">
+  <strong>دریافت وجه از:</strong>
+  {% if service.financial_info.payment_receiver == "specialist" %}
+    توسط کارشناس اعزامی
+  {% elif service.financial_info.payment_receiver == "center" %}
+    توسط مرکز
+  {% else %}
+    -
+  {% endif %}
+</div>
+                {% if service.financial_info.receipt_image %}
+    <div class="mb-3">
+      <strong>رسید پرداخت:</strong>
+      <div class="mt-2">
+        <a href="{{ service.financial_info.receipt_image.url }}" target="_blank">
+          <img src="{{ service.financial_info.receipt_image.url }}" alt="رسید پرداخت" class="img-thumbnail" style="max-height: 150px;">
+        </a>
+        <small class="d-block mt-1">برای مشاهده در اندازه بزرگتر کلیک کنید</small>
+      </div>
+    </div>
+    {% endif %}
+              </div>
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <strong>مبلغ دریافتی کل:</strong> {{ service.financial_info.total_amount|format_currency|default:"0" }} تومان
+                </div>
+                <div class="mb-3">
+                  <strong>مبلغ مصرفی:</strong> {{ service.financial_info.consumed_amount|format_currency|default:"0" }} تومان
+                </div>
+                <div class="mb-3">
+                  <strong>حق و سهم پزشک:</strong> {{ service.financial_info.doctor_share|format_currency|default:"0" }} تومان
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <strong>حق السهم مرکز:</strong> {{ service.financial_info.center_share|format_currency|default:"0" }} تومان
+                </div>
+                <div class="mb-3">
+                  <strong>نام معرف:</strong> {{ service.referrer_name|default:"-" }}
+                </div>
+                <div class="mb-3">
+                  <strong>حق و سهم معرف:</strong> {{ service.financial_info.consume_share|default:"0" }} تومان
+                </div>
+              </div>
+            </div>
+
+            <!-- بعد از نمایش سایر فیلدهای اطلاعات مالی -->
+{% if service.financial_info.description %}
+<div class="mt-3">
+  <strong>توضیحات:</strong>
+  <p class="mt-2">{{ service.financial_info.description }}</p>
+</div>
+{% endif %}
+            {% if service.financial_info.referred_to %}
+            <div class="alert alert-info mt-3">
+              <i class="bi bi-arrow-right-circle me-2"></i>
+              این خدمت به <strong>{{ service.financial_info.referred_to.user_name }}</strong> ارجاع داده شده است.
+            </div>
+            {% endif %}
+            
+          {% elif service.status == 'provided' %}
+            <hr>
+            <div class="alert alert-warning mt-3">
+              <i class="bi bi-exclamation-triangle me-2"></i>
+              اطلاعات مالی برای این درخواست هنوز ثبت نشده است.
+              <a href="{% url 'medical:service_financial_form' service_id=service.id %}" class="btn btn-sm btn-warning ms-2">
+                <i class="bi bi-cash me-1"></i>
+                ثبت اطلاعات مالی
+              </a>
+            </div>
+          {% endif %}
+
+          <div class="mt-4">
+            <a href="{% url 'medical:service_list' department %}" class="btn btn-outline-secondary">بازگشت</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

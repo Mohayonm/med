@@ -1,0 +1,165 @@
+{% extends "users/base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'users:dashboard' %}">داشبورد</a></li>
+          {% if ticket.sender == request.user %}
+            <li class="breadcrumb-item"><a href="{% url 'tickets:ticket_sent' %}">تیکت‌های ارسالی</a></li>
+          {% else %}
+            <li class="breadcrumb-item"><a href="{% url 'tickets:ticket_inbox' %}">صندوق دریافت</a></li>
+          {% endif %}
+          <li class="breadcrumb-item active" aria-current="page">جزئیات تیکت</li>
+        </ol>
+      </nav>
+      
+      <div class="card mb-4">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">تیکت #{{ ticket.id }}</h5>
+          {% if ticket.recipient == request.user %}
+            <div class="dropdown">
+              <button class="btn btn-sm btn-light dropdown-toggle" type="button" id="statusDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                تغییر وضعیت
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="statusDropdown">
+                <li><a class="dropdown-item status-update" data-status="open" href="#">باز</a></li>
+                <li><a class="dropdown-item status-update" data-status="in_progress" href="#">در حال بررسی</a></li>
+                <li><a class="dropdown-item status-update" data-status="closed" href="#">بسته</a></li>
+              </ul>
+            </div>
+          {% endif %}
+        </div>
+        <div class="card-body">
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <h5>اطلاعات تیکت</h5>
+              <table class="table table-sm">
+                <tr>
+                  <th style="width: 150px;">موضوع:</th>
+                  <td>{{ ticket.subject }}</td>
+                </tr>
+                <tr>
+                  <th>فرستنده:</th>
+                  <td>{{ ticket.sender.get_full_name }} ({{ ticket.sender.user_name }})</td>
+                </tr>
+                <tr>
+                  <th>گیرنده:</th>
+                  <td>{{ ticket.recipient.get_full_name }} ({{ ticket.recipient.user_name }})</td>
+                </tr>
+                <tr>
+                  <th>تاریخ ایجاد:</th>
+                  <td>{{ ticket.created_at|date:"Y/m/d H:i" }}</td>
+                </tr>
+              </table>
+            </div>
+            <div class="col-md-6">
+              <h5>جزئیات</h5>
+              <table class="table table-sm">
+                <tr>
+                  <th style="width: 150px;">بخش مربوطه:</th>
+                  <td>{{ ticket.get_department_display }}</td>
+                </tr>
+                <tr>
+                  <th>اولویت:</th>
+                  <td>
+                    {% if ticket.priority == 'urgent' %}
+                      <span class="badge bg-danger">{{ ticket.get_priority_display }}</span>
+                    {% elif ticket.priority == 'high' %}
+                      <span class="badge bg-warning text-dark">{{ ticket.get_priority_display }}</span>
+                    {% elif ticket.priority == 'medium' %}
+                      <span class="badge bg-info">{{ ticket.get_priority_display }}</span>
+                    {% else %}
+                      <span class="badge bg-secondary">{{ ticket.get_priority_display }}</span>
+                    {% endif %}
+                  </td>
+                </tr>
+                <tr>
+                  <th>وضعیت:</th>
+                  <td id="status-display">
+                    {% if ticket.status == 'open' %}
+                      <span class="badge bg-warning text-dark">{{ ticket.get_status_display }}</span>
+                    {% elif ticket.status == 'in_progress' %}
+                      <span class="badge bg-info">{{ ticket.get_status_display }}</span>
+                    {% else %}
+                      <span class="badge bg-success">{{ ticket.get_status_display }}</span>
+                    {% endif %}
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          
+          <div class="card bg-light">
+            <div class="card-header">متن پیام</div>
+            <div class="card-body">
+              <p class="card-text">{{ ticket.content|linebreaks }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer">
+          {% if ticket.sender == request.user %}
+            <a href="{% url 'tickets:ticket_sent' %}" class="btn btn-secondary">
+              <i class="bi bi-arrow-right-circle"></i> بازگشت به لیست
+            </a>
+          {% else %}
+            <a href="{% url 'tickets:ticket_inbox' %}" class="btn btn-secondary">
+              <i class="bi bi-arrow-right-circle"></i> بازگشت به صندوق دریافت
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if ticket.recipient == request.user %}
+<!-- JavaScript for updating ticket status -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const statusLinks = document.querySelectorAll('.status-update');
+    
+    statusLinks.forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const status = this.dataset.status;
+        
+        // AJAX request to update status
+        fetch('{% url "tickets:update_ticket_status" ticket.id %}', {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: `status=${status}`
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Update the displayed status
+            const statusDisplay = document.getElementById('status-display');
+            statusDisplay.innerHTML = '';
+            
+            if (status === 'open') {
+              statusDisplay.innerHTML = '<span class="badge bg-warning text-dark">باز</span>';
+            } else if (status === 'in_progress') {
+              statusDisplay.innerHTML = '<span class="badge bg-info">در حال بررسی</span>';
+            } else {
+              statusDisplay.innerHTML = '<span class="badge bg-success">بسته</span>';
+            }
+          } else {
+            alert('خطا در بروزرسانی وضعیت: ' + data.error);
+          }
+        })
+        .catch(error => {
+          alert('خطا در ارتباط با سرور');
+          console.error(error);
+        });
+      });
+    });
+  });
+</script>
+{% endif %}
+{% endblock %}

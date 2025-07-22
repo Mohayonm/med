@@ -1,0 +1,135 @@
+{% extends "users/base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h2>مدیریت تمام تیکت‌ها</h2>
+        <div class="btn-toolbar mb-2 mb-md-0">
+          <div class="btn-group me-2">
+            <a href="{% url 'tickets:ticket_inbox' %}" class="btn btn-sm btn-outline-secondary">
+              <i class="bi bi-inbox"></i> صندوق دریافت من
+            </a>
+            <a href="{% url 'tickets:ticket_sent' %}" class="btn btn-sm btn-outline-secondary">
+              <i class="bi bi-send"></i> تیکت‌های ارسالی من
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'error' %}alert-danger{% else %}alert-info{% endif %}" role="alert">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+      
+      <!-- فیلترها -->
+      <div class="card mb-4">
+        <div class="card-header bg-secondary text-white">
+          <h5 class="mb-0">فیلترها</h5>
+        </div>
+        <div class="card-body">
+          <form method="get" action="">
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label">وضعیت:</label>
+                <select name="status" class="form-select">
+                  <option value="">همه</option>
+                  {% for key, value in status_choices %}
+                    <option value="{{ key }}" {% if current_status == key %}selected{% endif %}>{{ value }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">بخش:</label>
+                <select name="department" class="form-select">
+                  <option value="">همه</option>
+                  {% for key, value in department_choices %}
+                    <option value="{{ key }}" {% if current_department == key %}selected{% endif %}>{{ value }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col-md-4 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary me-2">اعمال فیلتر</button>
+                <a href="{% url 'tickets:admin_all_tickets' %}" class="btn btn-outline-secondary">حذف فیلترها</a>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      
+      <!-- جدول تیکت‌ها -->
+      <div class="card">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">لیست تمام تیکت‌ها</h5>
+        </div>
+        <div class="card-body">
+          {% if tickets %}
+            <div class="table-responsive">
+              <table class="table table-striped table-hover">
+                <thead>
+                  <tr>
+                    <th>شناسه</th>
+                    <th>موضوع</th>
+                    <th>فرستنده</th>
+                    <th>گیرنده</th>
+                    <th>بخش</th>
+                    <th>اولویت</th>
+                    <th>وضعیت</th>
+                    <th>تاریخ</th>
+                    <th>عملیات</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for ticket in tickets %}
+                  <tr class="{% if ticket.status == 'open' %}table-warning{% elif ticket.status == 'in_progress' %}table-info{% else %}table-light{% endif %}">
+                    <td>{{ ticket.id }}</td>
+                    <td>{{ ticket.subject }}</td>
+                    <td>{{ ticket.sender.get_full_name }}</td>
+                    <td>{{ ticket.recipient.get_full_name }}</td>
+                    <td>{{ ticket.get_department_display }}</td>
+                    <td>
+                      {% if ticket.priority == 'urgent' %}
+                        <span class="badge bg-danger">{{ ticket.get_priority_display }}</span>
+                      {% elif ticket.priority == 'high' %}
+                        <span class="badge bg-warning text-dark">{{ ticket.get_priority_display }}</span>
+                      {% elif ticket.priority == 'medium' %}
+                        <span class="badge bg-info">{{ ticket.get_priority_display }}</span>
+                      {% else %}
+                        <span class="badge bg-secondary">{{ ticket.get_priority_display }}</span>
+                      {% endif %}
+                    </td>
+                    <td>
+                      {% if ticket.status == 'open' %}
+                        <span class="badge bg-warning text-dark">{{ ticket.get_status_display }}</span>
+                      {% elif ticket.status == 'in_progress' %}
+                        <span class="badge bg-info">{{ ticket.get_status_display }}</span>
+                      {% else %}
+                        <span class="badge bg-success">{{ ticket.get_status_display }}</span>
+                      {% endif %}
+                    </td>
+                    <td>{{ ticket.created_at|date:"Y/m/d H:i" }}</td>
+                    <td>
+                      <a href="{% url 'tickets:ticket_detail' ticket.id %}" class="btn btn-sm btn-primary">
+                        <i class="bi bi-eye"></i> مشاهده
+                      </a>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% else %}
+            <div class="alert alert-info" role="alert">
+              هیچ تیکتی در سیستم وجود ندارد.
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

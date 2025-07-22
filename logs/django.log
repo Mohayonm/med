@@ -1,0 +1,171 @@
+INFO 2025-04-17 17:32:32,401 autoreload 755012 129215407908672 Watching for file changes with StatReloader
+INFO 2025-04-17 17:33:30,947 autoreload 755012 129215407908672 /home/app/medical_p/medical/forms.py changed, reloading.
+INFO 2025-04-17 17:33:31,652 autoreload 755073 125021920327488 Watching for file changes with StatReloader
+INFO 2025-04-17 17:34:41,366 autoreload 755073 125021920327488 /home/app/medical_p/tickets/views.py changed, reloading.
+INFO 2025-04-17 17:34:41,987 autoreload 755089 125095570212672 Watching for file changes with StatReloader
+INFO 2025-04-17 17:36:19,302 autoreload 755250 135329154148160 Watching for file changes with StatReloader
+WARNING 2025-04-17 17:39:26,899 log 755250 135329063372480 Not Found: /favicon.ico/
+WARNING 2025-04-17 17:42:10,669 log 755250 135329073858240 Not Found: /favicon.ico/
+WARNING 2025-04-17 17:42:16,115 log 755250 135329073858240 Not Found: /favicon.ico/
+WARNING 2025-04-17 17:42:56,989 log 755250 135328981583552 Not Found: /favicon.ico/
+INFO 2025-04-17 17:45:26,405 autoreload 755432 126605859260224 Watching for file changes with StatReloader
+WARNING 2025-04-17 17:47:19,114 log 755432 126605680707264 Not Found: /favicon.ico/
+WARNING 2025-04-17 17:58:33,173 log 755432 126605670221504 Not Found: /favicon.ico/
+WARNING 2025-04-17 18:08:54,923 log 755432 126605649249984 Not Found: /favicon.ico/
+WARNING 2025-04-17 18:46:42,833 log 755432 126605567461056 Not Found: /favicon.ico/
+WARNING 2025-04-17 18:59:03,208 log 755432 126605659735744 Not Found: /.git/config
+WARNING 2025-04-17 19:37:45,352 log 755432 126605355648704 Not Found: /favicon.ico/
+WARNING 2025-04-17 20:05:31,801 log 755432 126605366134464 Not Found: /favicon.ico/
+WARNING 2025-04-17 20:35:56,186 log 755432 126605355648704 Not Found: /boaform/admin/formLogin
+WARNING 2025-04-17 21:43:44,373 log 755432 126605556975296 Not Found: /manager/html
+ERROR 2025-04-17 21:55:11,153 log 755432 126605536003776 Internal Server Error: /index.htm
+Traceback (most recent call last):
+  File "/home/app/medical_p/.venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/app/medical_p/.venv/lib/python3.13/site-packages/django/utils/deprecation.py", line 131, in __call__
+    response = self.process_response(request, response)
+  File "/home/app/medical_p/.venv/lib/python3.13/site-packages/django/middleware/common.py", line 108, in process_response
+    return self.response_redirect_class(self.get_full_path_with_slash(request))
+                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/app/medical_p/.venv/lib/python3.13/site-packages/django/middleware/common.py", line 87, in get_full_path_with_slash
+    raise RuntimeError(
+    ...<9 lines>...
+    )
+RuntimeError: You called this URL via POST, but the URL doesn't end in a slash and you have APPEND_SLASH set. Django can't redirect to the slash URL while maintaining POST data. Change your form to point to 188.213.199.111/index.htm/ (note the trailing slash), or set APPEND_SLASH=False in your Django settings.
+ERROR 2025-04-17 21:55:11,406 log 755432 126605525518016 Internal Server Error: /FD873AC4-CF86-4FED-84EC-4BD59C6F17A7
+Traceback (most recent call last):
+  File "/home/app/medical_p/.venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/app/medical_p/.venv/lib/python3.13/site-packages/django/utils/deprecation.py", line 131, in __call__
+    response = self.process_response(request, response)
+  File "/home/app/medical_p/.venv/lib/python3.13/site-packages/django/middleware/common.py", line 108, in process_response
+    return self.response_redirect_class(self.get_full_path_with_slash(request))
+                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/app/medical_p/.venv/lib/python3.13/site-packages/django/middleware/common.py", line 87, in get_full_path_with_slash
+    raise RuntimeError(
+    ...<9 lines>...
+    )
+RuntimeError: You called this URL via POST, but the URL doesn't end in a slash and you have APPEND_SLASH set. Django can't redirect to the slash URL while maintaining POST data. Change your form to point to 188.213.199.111/FD873AC4-CF86-4FED-84EC-4BD59C6F17A7/ (note the trailing slash), or set APPEND_SLASH=False in your Django settings.
+WARNING 2025-04-17 22:23:10,335 log 755432 126605655541440 Not Found: /boaform/admin/formLogin
+WARNING 2025-04-17 23:26:55,792 log 755432 126605334677184 Not Found: /manager/html
+WARNING 2025-04-17 23:42:16,575 log 755432 126605670221504 Not Found: /boaform/admin/formLogin
+WARNING 2025-04-18 01:16:24,655 log 755432 126605355648704 Not Found: /cgi-bin/../../../../../../../../../../bin/sh
+WARNING 2025-04-18 01:16:25,294 log 755432 126605355648704 Not Found: /cgi-bin/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/bin/sh
+ERROR 2025-04-18 01:16:25,865 log 755432 126605355648704 Internal Server Error: /hello.world
+Traceback (most recent call last):
+  File "/home/app/medical_p/.venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/app/medical_p/.venv/lib/python3.13/site-packages/django/utils/deprecation.py", line 131, in __call__
+    response = self.process_response(request, response)
+  File "/home/app/medical_p/.venv/lib/python3.13/site-packages/django/middleware/common.py", line 108, in process_response
+    return self.response_redirect_class(self.get_full_path_with_slash(request))
+                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/app/medical_p/.venv/lib/python3.13/site-packages/django/middleware/common.py", line 87, in get_full_path_with_slash
+    raise RuntimeError(
+    ...<9 lines>...
+    )
+RuntimeError: You called this URL via POST, but the URL doesn't end in a slash and you have APPEND_SLASH set. Django can't redirect to the slash URL while maintaining POST data. Change your form to point to 188.213.199.111:80/hello.world/?%ADd+allow_url_include%3d1+%ADd+auto_prepend_file%3dphp://input (note the trailing slash), or set APPEND_SLASH=False in your Django settings.
+WARNING 2025-04-18 01:16:27,045 log 755432 126605366134464 Not Found: /vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 01:16:27,558 log 755432 126605366134464 Not Found: /vendor/phpunit/phpunit/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 01:16:27,988 log 755432 126605366134464 Not Found: /vendor/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 01:16:28,447 log 755432 126605366134464 Not Found: /vendor/phpunit/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 01:16:28,930 log 755432 126605366134464 Not Found: /vendor/phpunit/phpunit/LICENSE/eval-stdin.php
+WARNING 2025-04-18 01:16:29,427 log 755432 126605366134464 Not Found: /vendor/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 01:16:29,939 log 755432 126605366134464 Not Found: /phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 01:16:30,477 log 755432 126605366134464 Not Found: /phpunit/phpunit/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 01:16:31,044 log 755432 126605366134464 Not Found: /phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 01:16:31,547 log 755432 126605366134464 Not Found: /phpunit/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 01:16:32,032 log 755432 126605366134464 Not Found: /lib/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 01:16:32,565 log 755432 126605366134464 Not Found: /lib/phpunit/phpunit/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 01:16:33,069 log 755432 126605366134464 Not Found: /lib/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 01:16:33,580 log 755432 126605366134464 Not Found: /lib/phpunit/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 01:16:34,094 log 755432 126605366134464 Not Found: /lib/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 01:16:34,625 log 755432 126605366134464 Not Found: /laravel/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 01:16:35,121 log 755432 126605366134464 Not Found: /www/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 01:16:35,652 log 755432 126605366134464 Not Found: /ws/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 01:16:36,208 log 755432 126605366134464 Not Found: /yii/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 01:16:36,745 log 755432 126605366134464 Not Found: /zend/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 01:16:37,324 log 755432 126605366134464 Not Found: /ws/ec/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 01:16:37,888 log 755432 126605366134464 Not Found: /V2/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 01:16:38,407 log 755432 126605366134464 Not Found: /tests/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 01:16:38,901 log 755432 126605366134464 Not Found: /test/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 01:16:39,437 log 755432 126605366134464 Not Found: /testing/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 01:16:39,941 log 755432 126605366134464 Not Found: /api/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 01:16:40,411 log 755432 126605366134464 Not Found: /demo/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 01:16:40,981 log 755432 126605366134464 Not Found: /cms/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 01:16:41,515 log 755432 126605366134464 Not Found: /crm/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 01:16:42,831 log 755432 126605366134464 Not Found: /backup/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 01:16:43,328 log 755432 126605366134464 Not Found: /blog/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 01:16:44,149 log 755432 126605366134464 Not Found: /workspace/drupal/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 01:16:44,735 log 755432 126605366134464 Not Found: /panel/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 01:16:45,252 log 755432 126605366134464 Not Found: /public/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 01:16:45,749 log 755432 126605366134464 Not Found: /apps/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 01:16:46,236 log 755432 126605366134464 Not Found: /app/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 01:16:47,792 log 755432 126605355648704 Not Found: /public/index.php
+WARNING 2025-04-18 01:16:50,045 log 755432 126605355648704 Not Found: /containers/json
+WARNING 2025-04-18 01:31:42,647 log 755432 126605670221504 Not Found: /boaform/admin/formLogin
+WARNING 2025-04-18 01:40:35,525 log 755432 126605567461056 Not Found: /geoserver/web/
+WARNING 2025-04-18 03:16:25,915 log 755432 126605567461056 Not Found: /systembc/password.php
+WARNING 2025-04-18 04:29:45,013 log 755432 126605515032256 Not Found: /cgi-bin/../../../../../../../../../../bin/sh
+WARNING 2025-04-18 04:29:47,449 log 755432 126605515032256 Not Found: /cgi-bin/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/bin/sh
+ERROR 2025-04-18 04:29:48,133 log 755432 126605515032256 Internal Server Error: /hello.world
+Traceback (most recent call last):
+  File "/home/app/medical_p/.venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/app/medical_p/.venv/lib/python3.13/site-packages/django/utils/deprecation.py", line 131, in __call__
+    response = self.process_response(request, response)
+  File "/home/app/medical_p/.venv/lib/python3.13/site-packages/django/middleware/common.py", line 108, in process_response
+    return self.response_redirect_class(self.get_full_path_with_slash(request))
+                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/app/medical_p/.venv/lib/python3.13/site-packages/django/middleware/common.py", line 87, in get_full_path_with_slash
+    raise RuntimeError(
+    ...<9 lines>...
+    )
+RuntimeError: You called this URL via POST, but the URL doesn't end in a slash and you have APPEND_SLASH set. Django can't redirect to the slash URL while maintaining POST data. Change your form to point to 188.213.199.111:80/hello.world/?%ADd+allow_url_include%3d1+%ADd+auto_prepend_file%3dphp://input (note the trailing slash), or set APPEND_SLASH=False in your Django settings.
+WARNING 2025-04-18 04:29:50,346 log 755432 126605366134464 Not Found: /vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 04:29:52,323 log 755432 126605366134464 Not Found: /vendor/phpunit/phpunit/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 04:29:53,273 log 755432 126605366134464 Not Found: /vendor/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 04:29:55,280 log 755432 126605366134464 Not Found: /vendor/phpunit/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 04:29:57,197 log 755432 126605366134464 Not Found: /vendor/phpunit/phpunit/LICENSE/eval-stdin.php
+WARNING 2025-04-18 04:29:58,945 log 755432 126605366134464 Not Found: /vendor/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 04:30:00,681 log 755432 126605366134464 Not Found: /phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 04:30:01,940 log 755432 126605366134464 Not Found: /phpunit/phpunit/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 04:30:03,376 log 755432 126605366134464 Not Found: /phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 04:30:05,292 log 755432 126605366134464 Not Found: /phpunit/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 04:30:06,445 log 755432 126605366134464 Not Found: /lib/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 04:30:08,925 log 755432 126605366134464 Not Found: /lib/phpunit/phpunit/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 04:30:10,704 log 755432 126605366134464 Not Found: /lib/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 04:30:11,804 log 755432 126605366134464 Not Found: /lib/phpunit/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 04:30:13,951 log 755432 126605366134464 Not Found: /lib/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 04:30:15,904 log 755432 126605366134464 Not Found: /laravel/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 04:30:16,672 log 755432 126605366134464 Not Found: /www/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 04:30:18,168 log 755432 126605366134464 Not Found: /ws/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 04:30:19,202 log 755432 126605366134464 Not Found: /yii/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 04:30:20,724 log 755432 126605366134464 Not Found: /zend/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 04:30:21,881 log 755432 126605366134464 Not Found: /ws/ec/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 04:30:23,725 log 755432 126605366134464 Not Found: /V2/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 04:30:24,541 log 755432 126605366134464 Not Found: /tests/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 04:30:26,036 log 755432 126605366134464 Not Found: /test/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 04:30:27,072 log 755432 126605366134464 Not Found: /testing/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 04:30:28,837 log 755432 126605366134464 Not Found: /api/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 04:30:29,751 log 755432 126605366134464 Not Found: /demo/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 04:30:31,087 log 755432 126605366134464 Not Found: /cms/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 04:30:32,000 log 755432 126605366134464 Not Found: /crm/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 04:30:34,503 log 755432 126605366134464 Not Found: /backup/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 04:30:36,223 log 755432 126605366134464 Not Found: /blog/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 04:30:37,377 log 755432 126605366134464 Not Found: /workspace/drupal/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 04:30:38,844 log 755432 126605366134464 Not Found: /panel/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 04:30:39,707 log 755432 126605366134464 Not Found: /public/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 04:30:41,289 log 755432 126605366134464 Not Found: /apps/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 04:30:42,411 log 755432 126605366134464 Not Found: /app/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+WARNING 2025-04-18 04:30:47,374 log 755432 126605515032256 Not Found: /public/index.php
+WARNING 2025-04-18 04:30:54,587 log 755432 126605525518016 Not Found: /containers/json
+WARNING 2025-04-18 06:33:54,054 log 755432 126605556975296 Not Found: /.git/config
+WARNING 2025-04-18 08:14:25,617 log 755432 126605313705664 Not Found: /.git/config
+WARNING 2025-04-18 09:31:15,051 log 755432 126605525518016 Not Found: /.git/config
+WARNING 2025-04-18 12:43:39,812 log 755432 126605334677184 Not Found: /GponForm/diag_Form
+WARNING 2025-04-18 14:03:53,448 log 755432 126605546489536 Not Found: /.well-known/agent.json
+INFO 2025-05-08 18:06:37,521 autoreload 30851 139952459720512 Watching for file changes with StatReloader
+INFO 2025-05-15 13:57:20,606 autoreload 23517 140574803826560 Watching for file changes with StatReloader
+INFO 2025-05-15 14:00:25,752 autoreload 24321 140452963997568 Watching for file changes with StatReloader
+INFO 2025-07-20 12:59:59,860 autoreload 7032 120 Watching for file changes with StatReloader

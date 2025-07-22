@@ -1,0 +1,347 @@
+{% extends "users/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'users:dashboard' %}">داشبورد</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'medical:service_list' department %}">بخش {{ department_name }}</a></li>
+          <li class="breadcrumb-item active" aria-current="page">اطلاعات مالی</li>
+        </ol>
+      </nav>
+      
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'error' %}alert-danger{% else %}alert-info{% endif %}" role="alert">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      <div class="card">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">اطلاعات مالی خدمت {{ department_name }}</h5>
+        </div>
+        <div class="card-body">
+          <!-- نمایش خلاصه درخواست خدمت -->
+          <div class="alert alert-info mb-4">
+            <h6 class="mb-2">خلاصه درخواست:</h6>
+            <div class="row">
+              <div class="col-md-6">
+                <p class="mb-1"><strong>نام بیمار:</strong> {{ service.name|default:"بدون نام" }}</p>
+                <p class="mb-1"><strong>شماره تماس:</strong> {{ service.phone }}</p>
+              </div>
+              <div class="col-md-6">
+                <p class="mb-1"><strong>تاریخ ارائه خدمت:</strong> {{ service.service_date|default:"-" }}</p>
+                <p class="mb-1"><strong>خدمت انجام شده:</strong> 
+                  {% if service.service_performed == "occupational_therapy" %}کاردرمانی
+                  {% elif service.service_performed == "speech_therapy" %}گفتار درمانی
+                  {% elif service.service_performed == "physiotherapy" %}فیزیوتراپی
+                  {% elif service.service_performed == "injection" %}تزریقات
+                  {% elif service.service_performed == "wound_dressing" %}پانسمان زخم
+                  {% elif service.service_performed == "bladder_catheterization" %}سونداژ مثانه
+                  {% elif service.service_performed == "antibiotic_therapy" %}آنتی بیوتیک تراپی
+                  {% elif service.service_performed == "serum_trap" %}سرم تراپ
+                  {% elif service.service_performed == "general_visit" %}ویزیت عمومی
+                  {% elif service.service_performed == "specialist_visit" %}ویزیت تخصصی
+                  {% elif service.service_performed == "super_specialist_visit" %}ویزیت فوق تخصصی
+                  {% elif service.service_performed == "homeـcare" %}مراقبت در خانه
+                  {% elif service.service_performed == "hospital_care" %}مراقبت در بیمارستان
+                  {% elif service.service_performed == "other" %}{{ service.other_service }}
+                  {% else %}-{% endif %}
+                </p>
+              </div>
+            </div>
+          </div>
+          <form method="post" action="" id="financial-form" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.media }}
+            
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="{{ form.specialist_name.id_for_label }}" class="form-label required">{{ form.specialist_name.label }}:</label>
+                  {{ form.specialist_name }}
+                  {% if form.specialist_name.errors %}
+                    <div class="text-danger mt-1">{{ form.specialist_name.errors }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-12">
+                  <div class="mb-3">
+                    <label class="form-label">{{ form.payment_receiver.label }}:</label>
+                    <div class="d-flex gap-4">
+                      {% for radio in form.payment_receiver %}
+                        <div class="form-check">
+                          {{ radio.tag }}
+                          <label class="form-check-label" for="{{ radio.id_for_label }}">{{ radio.choice_label }}</label>
+                        </div>
+                      {% endfor %}
+                    </div>
+                    {% if form.payment_receiver.errors %}
+                      <div class="text-danger mt-1">{{ form.payment_receiver.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="{{ form.transaction_date.id_for_label }}" class="form-label">{{ form.transaction_date.label }}:</label>
+                  {{ form.transaction_date }}
+                  <small class="text-muted d-block mt-1">
+                    <i class="bi bi-info-circle"></i>
+                    تاریخ را به صورت دلخواه وارد کنید (مثال: ۱۴۰۳/۱/۱)
+                  </small>
+                  {% if form.transaction_date.errors %}
+                    <div class="text-danger mt-1">{{ form.transaction_date.errors }}</div>
+                  {% endif %}
+                </div>
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="{{ form.receipt_image.id_for_label }}" class="form-label">{{ form.receipt_image.label }}:</label>
+                    {{ form.receipt_image }}
+                    <small class="text-muted d-block mt-1">
+                      <i class="bi bi-info-circle"></i>
+                      تصویر رسید پرداخت را بارگذاری کنید (اختیاری)
+                    </small>
+                    {% if form.receipt_image.errors %}
+                      <div class="text-danger mt-1">{{ form.receipt_image.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="row mb-3">
+              <div class="col-md-3">
+                <div class="mb-3">
+                  <label for="{{ form.total_amount.id_for_label }}" class="form-label required">{{ form.total_amount.label }}:</label>
+                  {{ form.total_amount }}
+                  {% if form.total_amount.errors %}
+                    <div class="text-danger mt-1">{{ form.total_amount.errors }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              
+              <div class="col-md-3">
+                <div class="mb-3">
+                  <label for="{{ form.consumed_amount.id_for_label }}" class="form-label required">{{ form.consumed_amount.label }}:</label>
+                  {{ form.consumed_amount }}
+                  {% if form.consumed_amount.errors %}
+                    <div class="text-danger mt-1">{{ form.consumed_amount.errors }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              
+              <div class="col-md-3">
+                <div class="mb-3">
+                  <label for="{{ form.doctor_share.id_for_label }}" class="form-label required">{{ form.doctor_share.label }}:</label>
+                  {{ form.doctor_share }}
+                  {% if form.doctor_share.errors %}
+                    <div class="text-danger mt-1">{{ form.doctor_share.errors }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              
+              <div class="col-md-3">
+                <div class="mb-3">
+                  <label for="{{ form.center_share.id_for_label }}" class="form-label required">{{ form.center_share.label }}:</label>
+                  {{ form.center_share }}
+                  {% if form.center_share.errors %}
+                    <div class="text-danger mt-1">{{ form.center_share.errors }}</div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="{{ form.consumed_type.id_for_label }}" class="form-label">{{ form.consumed_type.label }}:</label>
+                  {{ form.consumed_type }}
+                  {% if form.consumed_type.errors %}
+                    <div class="text-danger mt-1">{{ form.consumed_type.errors }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="{{ form.consume_share.id_for_label }}" class="form-label required">{{ form.consume_share.label }}:</label>
+                  {{ form.consume_share }}
+                  {% if form.consume_share.errors %}
+                    <div class="text-danger mt-1">{{ form.consume_share.errors }}</div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            
+            <!-- بخش ارجاع -->
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="{{ form.referred_to.id_for_label }}" class="form-label">{{ form.referred_to.label }}:</label>
+                  {{ form.referred_to }}
+                  <small class="text-muted d-block mt-1">
+                    <i class="bi bi-info-circle"></i>
+                    در صورت ارجاع، اطلاعات این خدمت به کاربر انتخاب شده ارسال خواهد شد.
+                  </small>
+                  {% if form.referred_to.errors %}
+                    <div class="text-danger mt-1">{{ form.referred_to.errors }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="{{ form.referral_reason.id_for_label }}" class="form-label">علت ارجاع:</label>
+                  <textarea name="referral_reason" id="id_referral_reason" class="form-control" rows="3" 
+                    placeholder="لطفا علت ارجاع این خدمت را بنویسید">{{ form.referral_reason.value|default:'' }}</textarea>
+                  {% if form.referral_reason.errors %}
+                    <div class="text-danger mt-1">{{ form.referral_reason.errors }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <!-- بعد از بخش ارجاع، قبل از دکمه ثبت نهایی -->
+<div class="row mb-3">
+  <div class="col-md-12">
+    <div class="mb-3">
+      <label for="{{ form.description.id_for_label }}" class="form-label">توضیحات:</label>
+      {{ form.description }}
+      <small class="text-muted d-block mt-1">
+        <i class="bi bi-info-circle"></i>
+        هرگونه توضیح اضافی در مورد این خدمت را اینجا وارد کنید
+      </small>
+      {% if form.description.errors %}
+        <div class="text-danger mt-1">{{ form.description.errors }}</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+            </div>
+            
+            <div class="mb-3">
+              <button type="submit" class="btn btn-primary">ثبت نهایی</button>
+              <a href="{% url 'medical:service_list' department %}" class="btn btn-outline-secondary me-2">بازگشت</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+<link rel="stylesheet" href="https://unpkg.com/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://unpkg.com/persian-date@1.1.0/dist/persian-date.min.js"></script>
+<script src="https://unpkg.com/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // اطمینان از اینکه jQuery لود شده است
+  if (typeof jQuery != 'undefined') {
+    console.log('jQuery is loaded');
+    
+    setTimeout(function() {
+      try {
+        console.log('Initializing transaction date picker');
+        $('#id_transaction_date').persianDatepicker({
+          format: 'YYYY/MM/DD',
+          initialValueType: 'persian',
+          autoClose: true,
+          persianDigit: false,
+          observer: true,
+          calendarType: 'persian',
+          calendar: {
+            persian: {
+              locale: 'fa',
+              showHint: true,
+              leapYearMode: 'algorithmic'
+            }
+          },
+          navigator: {
+            enabled: true,
+            scroll: { enabled: true },
+            text: { btnNextText: '<', btnPrevText: '>' }
+          },
+          toolbox: {
+            enabled: true,
+            calendarSwitch: { enabled: false },
+            todayButton: { enabled: true, text: { fa: 'امروز' } },
+            submitButton: { enabled: true, text: { fa: 'تایید' } },
+            text: { btnToday: 'امروز' }
+          }
+        });
+        
+        console.log('Persian datepicker successfully initialized');
+      } catch (e) {
+        console.error('Error initializing persian datepicker:', e);
+      }
+    }, 500); // تاخیر کوتاه برای اطمینان از آماده بودن DOM
+  } else {
+    console.error('jQuery is not loaded!');
+  }
+});
+
+  // Convert Persian digits to English digits before form submission
+  // تابع برای فرمت‌دهی عدد با ویرگول
+  function formatNumber(num) {
+    if (num === null || num === undefined || num === '') return '';
+    // حذف هرگونه کاراکتر غیر عددی به جز نقطه اعشار (اگر نیاز بود)
+    let value = String(num).replace(/[^\d]/g, '');
+    if (!value) return '';
+    // تبدیل به عدد و سپس به رشته با جداکننده هزارگان
+    return parseInt(value, 10).toLocaleString('en-US');
+  }
+
+  // اعمال فرمت‌دهی هنگام تایپ
+  $('.money-input').on('input', function(e) {
+    let value = $(this).val();
+    let formattedValue = formatNumber(value);
+    $(this).val(formattedValue);
+  });
+
+  // فرمت‌دهی مقادیر اولیه در زمان بارگذاری صفحه (مخصوص فرم‌های ویرایش)
+  $('.money-input').each(function() {
+      let initialValue = $(this).val();
+      if (initialValue) {
+          $(this).val(formatNumber(initialValue));
+      }
+  });
+
+  // حذف ویرگول‌ها قبل از ارسال فرم (این کد احتمالا از قبل وجود دارد، مطمئن شوید که هست)
+  $('form').submit(function() {
+    $('.money-input').each(function() {
+      let value = $(this).val().replace(/[^\d]/g, ''); // حذف همه کاراکترهای غیر عددی
+      // اگر مقدار خالی بود یا فقط صفر بود، آن را به 0 تبدیل کن
+      // اگر فیلد می‌تواند خالی باشد، این بخش را تنظیم کنید
+      if (!value || parseInt(value, 10) === 0) {
+         // $(this).val('0'); // اگر مقدار پیش‌فرض 0 می‌خواهید
+         $(this).val(''); // اگر می‌خواهید خالی ارسال شود (مطمئن شوید مدل اجازه null/blank می‌دهد)
+      } else {
+         $(this).val(value);
+      }
+    });
+    return true; // ادامه ارسال فرم
+  });
+</script>
+
+<style>
+  .required:after {
+    content: " *";
+    color: red;
+  }
+  
+  /* استایل‌های تقویم شمسی */
+  .datepicker-plot-area {
+    font-family: inherit;
+    direction: rtl;
+    z-index: 1000; /* افزایش z-index برای اطمینان از نمایش تقویم بر روی سایر عناصر */
+  }
+</style>
+{% endblock %}
