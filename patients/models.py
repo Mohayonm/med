@@ -2,10 +2,10 @@ from django.db import models
 
 class Patient(models.Model):
     name = models.CharField(max_length=100, verbose_name="نام بیمار")
-    age = models.IntegerField(verbose_name="سن")
+    age = models.PositiveIntegerField(verbose_name="سن")
     phone = models.CharField(max_length=15, blank=True, verbose_name="شماره تماس")
-    national_id = models.CharField(max_length=10, blank=True, verbose_name="کد ملی")
-    gender = models.CharField(max_length=10, choices=[("M", "مرد"), ("F", "زن")], blank=True, verbose_name="جنسیت")
+    national_id = models.CharField(max_length=10, unique=True, verbose_name="کد ملی")
+    gender = models.CharField(max_length=1, choices=[('M', 'مرد'), ('F', 'زن')], verbose_name="جنسیت")
     address = models.TextField(blank=True, verbose_name="آدرس")
     birth_date = models.DateField(blank=True, null=True, verbose_name="تاریخ تولد")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="تاریخ ثبت")
@@ -18,13 +18,19 @@ class Patient(models.Model):
         verbose_name_plural = "بیماران"
 
 class Service(models.Model):
-    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name="services", verbose_name="بیمار")
-    service_type = models.CharField(max_length=100, verbose_name="نوع خدمت")
+    SERVICE_TYPES = [
+        ('rehabilitation', 'بازتوانی'),
+        ('medical', 'پزشکی'),
+        ('nursing', 'پرستاری'),
+        ('care', 'مراقبت'),
+    ]
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, verbose_name="بیمار")
+    service_type = models.CharField(max_length=20, choices=SERVICE_TYPES, verbose_name="نوع خدمت")
     description = models.TextField(blank=True, verbose_name="توضیحات")
-    date = models.DateTimeField(auto_now_add=True, verbose_name="تاریخ خدمت")
+    date = models.DateField(verbose_name="تاریخ خدمت")
 
     def __str__(self):
-        return f"{self.service_type} برای {self.patient.name}"
+        return f"{self.get_service_type_display()} برای {self.patient.name}"
 
     class Meta:
         verbose_name = "خدمت"

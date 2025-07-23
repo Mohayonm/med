@@ -3,7 +3,7 @@ from .models import Patient, Service
 
 @admin.register(Patient)
 class PatientAdmin(admin.ModelAdmin):
-    list_display = ('name', 'age', 'phone', 'national_id', 'gender', 'created_at')
+    list_display = ('name', 'national_id', 'age', 'gender', 'phone', 'created_at')
     list_filter = ('gender', 'created_at')
     search_fields = ('name', 'national_id')
     date_hierarchy = 'created_at'
@@ -12,5 +12,4 @@ class PatientAdmin(admin.ModelAdmin):
 class ServiceAdmin(admin.ModelAdmin):
     list_display = ('patient', 'service_type', 'date')
     list_filter = ('service_type', 'date')
-    search_fields = ('patient__name', 'service_type')
-    date_hierarchy = 'date'
+    search_fields = ('patient__name',)

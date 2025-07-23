@@ -147,7 +147,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = 'Asia/Tehran'
 
 USE_I18N = True
 
@@ -166,7 +166,27 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
-
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+STATIC_ROOT = BASE_DIR / "staticfiles"
+JALALI_SETTINGS = {
+    'ADMIN_CSS_STATIC_FILES': {
+        'all': [
+            'admin/jquery.ui.datepicker.jalali/themes/base/jquery-ui.min.css',
+            'admin/css/main.css'
+        ]
+    },
+    'ADMIN_JS_STATIC_FILES': [
+        'admin/jquery.ui.datepicker.jalali/scripts/jquery-1.10.2.min.js',
+        'admin/jquery.ui.datepicker.jalali/scripts/jquery.ui.core.js',
+        'admin/jquery.ui.datepicker.jalali/scripts/jquery.ui.datepicker-cc.js',
+        'admin/jquery.ui.datepicker.jalali/scripts/calendar.js',
+        'admin/jquery.ui.datepicker.jalali/scripts/jquery.ui.datepicker-cc-fa.js',
+        'admin/main.js'
+    ]
+}
 import os
 
 os.makedirs(os.path.join(BASE_DIR, "static"), exist_ok=True)
