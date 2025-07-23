@@ -32,7 +32,7 @@
                     <ul class="list-group mb-4">
                         {% for patient in patients %}
                             <li class="list-group-item">
-                                <a href="{% url 'tickets:patient_detail' patient.id %}" class="text-decoration-none">
+                                <a href="{% url 'patients:patient_detail' patient.id %}" class="text-decoration-none">
                                     {{ patient.name }} (سن: {{ patient.age }})
                                 </a>
                             </li>

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load i18n %}
-{% load jformat %}
+{% load jalali_tags %}  <!-- تغییر از jformat به jalali_tags -->
 
 {% block title %}{% trans "جزئیات بیمار" %} - {{ patient.name }}{% endblock %}
 
@@ -51,8 +51,8 @@
                 <p><strong>{% trans "کد ملی" %}:</strong> {{ patient.national_id }}</p>
                 <p><strong>{% trans "جنسیت" %}:</strong> {{ patient.get_gender_display }}</p>
                 <p><strong>{% trans "آدرس" %}:</strong> {{ patient.address|default:"-" }}</p>
-                <p><strong>{% trans "تاریخ تولد" %}:</strong> {{ patient.birth_date|jdate:"Y/m/d" }}</p>
-                <p><strong>{% trans "تاریخ ثبت" %}:</strong> {{ patient.created_at|jdate:"Y/m/d H:i" }}</p>
+                <p><strong>{% trans "تاریخ تولد" %}:</strong> {{ patient.birth_date|jdate:"Y/m/d"|default:"-" }}</p>
+                <p><strong>{% trans "تاریخ ثبت" %}:</strong> {{ patient.created_at|jdate:"Y/m/d H:i"|default:"-" }}</p>
             </div>
         </div>
         <div class="card mt-4">
@@ -76,7 +76,8 @@
                         <tr>
                             <td>{{ service.get_service_type_display }}</td>
                             <td>{{ service.description|default:"-" }}</td>
-                            <td>{{ service.date|jdate:"Y/m/d" }}</td>
+                            <td>{{ service.date|jdate:"Y/m/d"|default:"-" }}</td>
+                            <p>تست تاریخ: {{ service.date|jdate:"Y/m/d"|default:"-" }}</p>
                         </tr>
                         {% endfor %}
                     </tbody>

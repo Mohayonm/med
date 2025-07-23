@@ -1,6 +1,7 @@
 from django import forms
 from .models import Patient, Service
 from django_jalali.forms import jDateField
+from jdatetime import date as jdate
 
 class PatientForm(forms.ModelForm):
     birth_date = jDateField(
@@ -9,7 +10,8 @@ class PatientForm(forms.ModelForm):
             'placeholder': 'YYYY/MM/DD (مثال: 1404/05/01)',
         }),
         label='تاریخ تولد',
-        input_formats=['%Y/%m/%d']  # فرمت دقیق برای تاریخ شمسی
+        input_formats=['%Y/%m/%d'],
+        required=False
     )
 
     class Meta:
@@ -31,9 +33,10 @@ class PatientForm(forms.ModelForm):
 
     def clean_birth_date(self):
         birth_date = self.cleaned_data.get('birth_date')
-        if birth_date:
-            return birth_date
-        return None
+        if birth_date and isinstance(birth_date, jdate):
+            # تبدیل تاریخ شمسی به میلادی
+            return birth_date.togregorian()
+        return birth_date
 
 class ServiceForm(forms.ModelForm):
     date = jDateField(
@@ -42,7 +45,7 @@ class ServiceForm(forms.ModelForm):
             'placeholder': 'YYYY/MM/DD (مثال: 1404/05/01)',
         }),
         label='تاریخ خدمت',
-        input_formats=['%Y/%m/%d']  # فرمت دقیق برای تاریخ شمسی
+        input_formats=['%Y/%m/%d']
     )
 
     class Meta:
@@ -65,6 +68,6 @@ class ServiceForm(forms.ModelForm):
 
     def clean_date(self):
         date = self.cleaned_data.get('date')
-        if date:
-            return date
-        return None
+        if date and isinstance(date, jdate):
+            return date.togregorian()
+        return date
