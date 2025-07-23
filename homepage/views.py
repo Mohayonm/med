@@ -4,4 +4,4 @@ def home(request):
     """صفحه اصلی سایت"""
     if request.user.is_authenticated:
         return redirect("users:dashboard")
-    return render(request, "users/home.html")
+    return redirect("patients:patient_list")

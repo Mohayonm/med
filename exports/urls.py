@@ -6,7 +6,7 @@ app_name = "exports"
 
 urlpatterns = [
     # Dashboard
-    path("main/", views.export_dashboard, name="dashboard"),
+    path('dashboard/', views.export_dashboard, name='dashboard'),  # تغییر dashboard به export_dashboard
     
     # Database download (only for staff/admin)
     path("database/download/", views.download_database, name="download_database"),

@@ -831,3 +831,7 @@ INFO 2025-07-23 19:52:31,768 basehttp 3028 7544 "GET /static/admin/css/responsiv
 INFO 2025-07-23 19:52:31,808 basehttp 3028 6556 "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 200 3063
 INFO 2025-07-23 19:52:31,834 basehttp 3028 6556 "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 200 331
 INFO 2025-07-23 19:52:31,839 basehttp 3028 7544 "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 200 380
+INFO 2025-07-23 22:16:03,400 basehttp 1404 4456 "GET /users/dashboard/ HTTP/1.1" 200 12614
+INFO 2025-07-23 22:16:08,810 basehttp 1404 4456 "GET /patients/ HTTP/1.1" 200 6779
+INFO 2025-07-23 22:16:10,514 basehttp 1404 4456 "GET /patients/add/ HTTP/1.1" 200 9589
+ERROR 2025-07-23 22:16:19,629 basehttp 1404 4456 "POST /patients/add/ HTTP/1.1" 500 105158

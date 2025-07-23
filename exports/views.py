@@ -9,7 +9,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 @login_required(login_url="/login/")
 def export_dashboard(request):
     """صفحه اصلی گزارش‌گیری و خروجی"""
-    return render(request, "exports/export_dashboard.html", {})
+    return render(request, 'exports/dashboard.html', {})
 
 
 @staff_member_required(login_url="/login/")
